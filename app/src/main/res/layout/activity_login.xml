@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.activities.LoginActivity">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/frame_username"
+            style="@style/my_card_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:visibility="visible"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="0dp"
+                    android:layout_toLeftOf="@id/iv_img_3"
+                    android:layout_toRightOf="@+id/ivClearUsername"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/iransans_light"
+                    android:gravity="right|center_vertical"
+                    android:hint="نام کاربری خود را وارد کنید"
+                    android:imeOptions="actionNext|flagNoExtractUi"
+                    android:lines="1"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_toStartOf="@id/iv_img_3"
+                    android:layout_toEndOf="@+id/ivClearUsername" />
+
+                <ImageView
+                    android:id="@+id/iv_img_3"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="16dp"
+                    app:srcCompat="@drawable/ic_person"
+                    app:tint="@color/colorPrimary"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp" />
+
+
+                <ImageView
+                    android:id="@+id/ivClearUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="?attr/actionBarItemBackground"
+                    android:padding="4dp"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/ic_lock"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/frame_password"
+            style="@style/my_card_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:visibility="visible"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintEnd_toEndOf="@+id/frame_username"
+            app:layout_constraintStart_toStartOf="@+id/frame_username"
+            app:layout_constraintTop_toBottomOf="@+id/frame_username">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="0dp"
+                    android:layout_toLeftOf="@id/iv_img_4"
+                    android:layout_toRightOf="@+id/ivClearPassword"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/iransans_light"
+                    android:gravity="right|center_vertical"
+                    android:hint="گذرواژه خود را وارد کنید"
+                    android:imeOptions="actionNext|flagNoExtractUi"
+                    android:inputType="textPassword"
+                    android:lines="1"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_toStartOf="@id/iv_img_4"
+                    android:layout_toEndOf="@+id/ivClearPassword" />
+
+                <ImageView
+                    android:id="@+id/iv_img_4"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="16dp"
+                    app:srcCompat="@drawable/ic_lock"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentEnd="true" />
+
+
+                <ImageView
+                    android:id="@+id/ivClearPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="?attr/actionBarItemBackground"
+                    android:padding="4dp"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/ic_lock"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="25dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_launcher_foreground"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <mp.amir.ir.kamandnet.ui.activities.customs.customs.general.MyRaisedButton
+            android:id="@+id/btnLogin"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="64dp"
+            app:backgroundColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/frame_username"
+            app:layout_constraintStart_toStartOf="@+id/frame_username"
+            app:layout_constraintTop_toBottomOf="@+id/frame_password"
+            app:radius="20dp"
+            app:text="ورود" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
