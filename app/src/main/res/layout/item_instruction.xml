@@ -11,8 +11,10 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/my_card_style"
-        android:layout_margin="@dimen/tiny_margin">
+        style="@style/my_clickable_card_style"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -84,10 +86,11 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="نوار نقاله:؟؟"
+                android:text="@{data.nodeType + `:`}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintTop_toBottomOf="@+id/textView2"
+                tools:text="نوار نقاله:" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -95,10 +98,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="نوار نقاله شماره 1"
+                android:text="@{data.nodeInstance}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView4"
-                app:layout_constraintEnd_toStartOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="@+id/textView4" />
+                app:layout_constraintEnd_toStartOf="@+id/textView4"
+                app:layout_constraintTop_toTopOf="@+id/textView4"
+                tools:text="نوار نقاله شماره 1" />
 
             <TextView
                 android:id="@+id/textView6"

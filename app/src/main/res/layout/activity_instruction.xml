@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="instruction"
+            type="mp.amir.ir.kamandnet.models.Instruction" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:layout_alignParentTop="true">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                style="@style/my_toolbar_style"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
+                        android:id="@+id/frame_toolbar_buttons"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
+
+
+                        <ImageView
+                            android:id="@+id/ivBack"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="8dp"
+                            android:background="?attr/actionBarItemBackground"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:src="@drawable/ic_back" />
+
+
+                        <TextView
+                            style="@style/my_title_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="8dp"
+                            android:layout_toLeftOf="@+id/ivBack"
+                            android:fontFamily="@font/iransans"
+                            android:gravity="center_vertical"
+                            android:text="دستور العمل"
+                            android:textColor="@color/white" />
+
+                    </RelativeLayout>
+
+                </FrameLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:layout_below="@+id/appBarLayout">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray50"
+                tools:context=".ui.activities.InstructionActivity">
+
+
+                <include
+                    android:id="@+id/layout_instruction"
+                    layout="@layout/item_instruction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    app:data="@{instruction}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvLabel"
+                    style="@style/my_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="شرح کار"
+                    app:layout_constraintEnd_toEndOf="@+id/layout_instruction"
+                    app:layout_constraintTop_toBottomOf="@id/layout_instruction" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    style="@style/my_card_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    app:layout_constraintTop_toBottomOf="@id/tvLabel"
+                    tools:layout_editor_absoluteX="8dp">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:fontFamily="@font/iransans"
+                        android:gravity="right|top"
+                        android:hint="شرح کار را بنویسید.."
+                        android:lines="5"
+                        android:maxLength="500"
+                        android:maxLines="5"
+                        android:shadowColor="@color/gray500"
+                        android:textColor="@color/black"
+                        android:textCursorDrawable="@drawable/shape_custom_cursor"
+                        android:textSize="12sp" />
+
+                </androidx.cardview.widget.CardView>
+
+
+                <!--add  pic frame-->
+                <LinearLayout
+                    android:id="@+id/frame_add_pic"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_rect_dash"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/frame_pic_1"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_margin="4dp"
+                        android:src="@drawable/ic_lock"
+                        app:tint="@color/item_pic_placeholder" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/iransans_medium"
+                        android:text="افزودن عکس"
+                        android:textColor="@color/item_pic_placeholder" />
+                </LinearLayout>
+
+
+                <include
+                    android:id="@+id/frame_pic_1"
+                    layout="@layout/item_pic_placeholder"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/frame_add_pic"
+                    app:layout_constraintEnd_toStartOf="@+id/frame_add_pic"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/frame_pic_2"
+                    app:layout_constraintTop_toTopOf="@+id/frame_add_pic" />
+
+                <include
+                    android:id="@+id/frame_pic_2"
+                    layout="@layout/item_pic_placeholder"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/frame_add_pic"
+                    app:layout_constraintEnd_toStartOf="@+id/frame_pic_1"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/frame_add_pic" />
+
+                <include
+                    android:id="@+id/frame_pic_3"
+                    layout="@layout/item_pic_placeholder"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="@+id/frame_add_pic"
+                    app:layout_constraintStart_toStartOf="@+id/frame_add_pic"
+                    app:layout_constraintTop_toBottomOf="@+id/frame_add_pic" />
+
+                <include
+                    android:id="@+id/frame_pic_4"
+                    layout="@layout/item_pic_placeholder"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/frame_pic_3"
+                    app:layout_constraintEnd_toEndOf="@+id/frame_pic_1"
+                    app:layout_constraintStart_toStartOf="@+id/frame_pic_1"
+                    app:layout_constraintTop_toTopOf="@+id/frame_pic_3" />
+
+                <include
+                    android:id="@+id/frame_pic_5"
+                    layout="@layout/item_pic_placeholder"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/frame_pic_4"
+                    app:layout_constraintEnd_toEndOf="@+id/frame_pic_2"
+                    app:layout_constraintStart_toStartOf="@+id/frame_pic_2"
+                    app:layout_constraintTop_toTopOf="@+id/frame_pic_4" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+        <mp.amir.ir.kamandnet.ui.customs.customs.general.MyRaisedButton
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:image="@drawable/ic_bug"
+            app:isFlat="true"
+            android:layout_alignParentBottom="true"
+            app:text="اسکن و ثبت" />
+
+    </RelativeLayout>
+
+
+</layout>

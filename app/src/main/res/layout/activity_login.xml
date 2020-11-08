@@ -6,6 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/gray50"
         tools:context=".ui.activities.LoginActivity">
 
         <androidx.cardview.widget.CardView
@@ -170,7 +171,7 @@
             app:srcCompat="@drawable/ic_launcher_foreground"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-        <mp.amir.ir.kamandnet.ui.activities.customs.customs.general.MyRaisedButton
+        <mp.amir.ir.kamandnet.ui.customs.customs.general.MyRaisedButton
             android:id="@+id/btnLogin"
             android:layout_width="0dp"
             android:layout_height="55dp"

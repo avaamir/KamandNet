@@ -15,9 +15,9 @@ import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityMainBinding
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.respository.UserConfigs
-import mp.amir.ir.kamandnet.ui.activities.customs.animations.closeReveal
-import mp.amir.ir.kamandnet.ui.activities.customs.animations.startReveal
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter
+import mp.amir.ir.kamandnet.ui.customs.animations.closeReveal
+import mp.amir.ir.kamandnet.ui.customs.animations.startReveal
 import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.wewi.Constants
 import mp.amir.ir.kamandnet.viewmodels.MainActivityViewModel
@@ -47,27 +47,48 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction {
         initToolbarButtons()
         subscribeObservers()
 
-        viewModel.getInstructions()
+        viewModel.getInstructionsFromServer()
     }
 
     private fun initViews() {
-        mBinding.recyclerInstruction.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        mBinding.recyclerInstruction.layoutManager =
+            LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         mBinding.recyclerInstruction.adapter = mAdapter
     }
 
     private fun subscribeObservers() {
-        viewModel.instructions.observe(this, {
+        subscribeNetworkStateChangeListener {
+            if (it) {
+                //TODO vaghti net nadare ama dastura load shodan faghat bala ye alamat biad ke yaani net nadari va save shodan flow ha to server bere tu halat pending
+            } else {
+                //TODO
+            }
+        }
+
+
+        viewModel.getInstructionsFromServerResponse.observe(this, {
+            mBinding.progressBar.visibility = View.GONE
             if (it != null) {
                 if (it.isSucceed) {
-                    mAdapter.submitList(it.entity)
+                    //TODO test for checking db
+                    //mAdapter.submitList(it.entity)
+                    if (it.entity.isEmpty()) {
+                        toast("شما دستور کار دیگری ندارید")
+                    }
                 } else {
                     toast(it.message)
                 }
             } else {
                 snack(Constants.SERVER_ERROR) {
-                    viewModel.getInstructions()
+                    viewModel.getInstructionsFromServer()
                 }
             }
+        })
+
+        viewModel.instructions.observe(this, {
+            if (mBinding.progressBar.visibility != View.GONE)
+                mBinding.progressBar.visibility = View.GONE
+            mAdapter.submitList(it)
         })
     }
 
@@ -96,6 +117,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction {
         }
 
         ivClose.setOnClickListener {  //TODO closeReveal kar nemikonad??
+            viewModel.filterList(null)
             closeSearchBar()
         }
 
@@ -113,6 +135,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction {
 
         })
     }
+
     private fun closeSearchBar() {
         isSearchShown = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -128,7 +151,11 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction {
     }
 
     override fun onInstructionItemClicked(item: Instruction) {
-        TODO("Not yet implemented")
+        startActivity(
+            Intent(this, InstructionActivity::class.java).apply {
+                putParcelableExtra(Constants.INTENT_INSTRUCTION_ACTIVITY_DATA, item)
+            }
+        )
     }
 
 

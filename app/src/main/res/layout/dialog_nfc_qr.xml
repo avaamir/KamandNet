@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rect_rounded"
+    android:elevation="2dp"
+    android:orientation="vertical"
+    android:padding="@dimen/medium_margin">
+
+    <mp.amir.ir.kamandnet.ui.customs.customs.general.CardButton
+        android:id="@+id/btnNFC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:btn_image="@drawable/ic_lock"
+        app:layout_constraintBottom_toBottomOf="@+id/btnQR"
+        app:layout_constraintEnd_toStartOf="@+id/btnQR"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnQR"
+        app:caption="استفاده از NFC"/>
+
+
+    <mp.amir.ir.kamandnet.ui.customs.customs.general.CardButton
+        android:id="@+id/btnQR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnNFC"
+        app:layout_constraintTop_toTopOf="parent"
+        app:btn_image="@drawable/ic_lock"
+        app:caption="اسکن کد QR"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

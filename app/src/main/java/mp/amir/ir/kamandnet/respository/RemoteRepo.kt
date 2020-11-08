@@ -1,16 +1,12 @@
 package mp.amir.ir.kamandnet.respository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
+import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 import mp.amir.ir.kamandnet.utils.fakeInstructions
 import mp.amir.ir.kamandnet.utils.fakeUser
@@ -82,7 +78,19 @@ object RemoteRepo {
         TODO("Not yet implemented")
     }
 
-    fun getInstructions() : LiveData<Entity<List<Instruction>>?> {
-        return MutableLiveData(Entity(fakeInstructions() , "", true))
+    fun getInstructions(): RunOnceLiveData<Entity<List<Instruction>>?> {
+
+        return object: RunOnceLiveData<Entity<List<Instruction>>?>() {
+            override fun onActiveRunOnce() {
+               CoroutineScope(IO).launch {
+                   delay(3000)
+                   val response = Entity(fakeInstructions(), "", true)
+                   if (response.isSucceed) {
+                       InstructionsRepo.insert(response.entity)
+                   }
+                   postValue(response)
+               }
+            }
+        }
     }
 }

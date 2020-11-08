@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.LayoutMapBinding
-import mp.amir.ir.kamandnet.ui.activities.customs.osm.ImageMarker
-import mp.amir.ir.kamandnet.ui.activities.customs.osm.MyOSMMapView
+import mp.amir.ir.kamandnet.ui.customs.osm.ImageMarker
+import mp.amir.ir.kamandnet.ui.customs.osm.MyOSMMapView
 import mp.amir.ir.kamandnet.utils.general.toast
 import mp.amir.ir.kamandnet.utils.map.MyMapTileSource
 import mp.amir.ir.kamandnet.utils.wewi.Constants

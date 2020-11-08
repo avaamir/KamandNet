@@ -4,7 +4,7 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/bg_rect_rounded"
+    android:background="@drawable/bg_rect_rounded_2"
     android:gravity="center"
     android:padding="16dp">
 
@@ -55,14 +55,14 @@
             android:singleLine="true"
             style="@style/my_gray_medium_text"
             android:textSize="14sp"
-            android:textColor="@color/light_blue"
+            android:textColor="@color/red"
             android:text="بررسی تنظیمات شبکه" />
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginLeft="4dp"
-            app:tint="@color/light_blue"
+            app:tint="@color/red"
             app:srcCompat="@drawable/ic_wifi_settings"
             android:layout_marginStart="4dp" />
 

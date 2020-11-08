@@ -1,18 +1,12 @@
 package mp.amir.ir.kamandnet.ui.activities
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.activity_main.*
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityLoginBinding
-import mp.amir.ir.kamandnet.ui.activities.customs.animations.closeReveal
-import mp.amir.ir.kamandnet.ui.activities.customs.animations.startReveal
 import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.wewi.Constants
 import mp.amir.ir.kamandnet.viewmodels.LoginActivityViewModel
