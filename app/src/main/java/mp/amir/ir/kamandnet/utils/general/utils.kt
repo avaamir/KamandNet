@@ -10,7 +10,6 @@ import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 
-
 fun standardCartNumber(number: String): String {
     val sb = StringBuilder(number)
     for (i in 1..number.length) {

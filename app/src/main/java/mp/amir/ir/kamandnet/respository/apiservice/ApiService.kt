@@ -1,19 +1,19 @@
 package mp.amir.ir.kamandnet.respository.apiservice
-import mp.amir.ir.kamandnet.BuildConfig
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import mp.amir.ir.kamandnet.respository.UserConfigs
-import mp.amir.ir.kamandnet.respository.apiservice.interceptors.AuthCookieInterceptor
-import mp.amir.ir.kamandnet.respository.apiservice.interceptors.NetworkConnectionInterceptor
-import mp.amir.ir.kamandnet.utils.general.Event
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import mp.amir.ir.kamandnet.BuildConfig
+import mp.amir.ir.kamandnet.respository.UserConfigs
+import mp.amir.ir.kamandnet.respository.apiservice.interceptors.AuthCookieInterceptor
+import mp.amir.ir.kamandnet.respository.apiservice.interceptors.NetworkConnectionInterceptor
 import mp.amir.ir.kamandnet.respository.apiservice.interceptors.UnauthorizedInterceptor
+import mp.amir.ir.kamandnet.utils.general.Event
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,18 +25,17 @@ object ApiService {
     const val Domain = "http://app.wewi.ir/"
     private const val BASE_API_URL = Domain
 
-
-    private lateinit var context: Context
-
     private var event = Event(Unit)
     private var onUnauthorizedListener: OnUnauthorizedListener? = null
     private var internetConnectionListener: InternetConnectionListener? = null
 
     private var token: String? = null
 
-    val client: WewiClient by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-        retrofitBuilder.build().create(WewiClient::class.java)
+    val CLIENT: KamandClient by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        retrofitBuilder.build().create(KamandClient::class.java)
     }
+
+    private lateinit var connectivityManager: ConnectivityManager
 
 
     private val retrofitBuilder: Retrofit.Builder by lazy {
@@ -127,8 +126,6 @@ object ApiService {
 
 
     fun isNetworkAvailable(): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val network = connectivityManager.activeNetwork ?: return false
             val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
@@ -149,7 +146,8 @@ object ApiService {
 
 
     fun setContext(context: Context) {
-        ApiService.context = context.applicationContext
+        connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
     interface OnUnauthorizedListener {

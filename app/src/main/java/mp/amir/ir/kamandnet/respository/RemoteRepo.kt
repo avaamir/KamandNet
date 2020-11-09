@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
+import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 import mp.amir.ir.kamandnet.utils.fakeInstructions
@@ -70,7 +71,7 @@ object RemoteRepo {
         if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
         val user = fakeUser(username)
         PrefManager.saveUser(user)
-        onResponse(Entity(user, "", true))
+        onResponse(Entity(user, true, ""))
         //TODO connect it to server
     }
 
@@ -79,18 +80,19 @@ object RemoteRepo {
     }
 
     fun getInstructions(): RunOnceLiveData<Entity<List<Instruction>>?> {
-
-        return object: RunOnceLiveData<Entity<List<Instruction>>?>() {
+        return object : RunOnceLiveData<Entity<List<Instruction>>?>() {
             override fun onActiveRunOnce() {
-               CoroutineScope(IO).launch {
-                   delay(3000)
-                   val response = Entity(fakeInstructions(), "", true)
-                   if (response.isSucceed) {
-                       InstructionsRepo.insert(response.entity)
-                   }
-                   postValue(response)
-               }
+                CoroutineScope(IO).launch {
+                    delay(3000)
+                    val response = Entity(fakeInstructions(), true, "")
+                    if (response.isSucceed) {
+                        InstructionsRepo.insert(response.entity!!)
+                    }
+                    postValue(response)
+                }
             }
         }
     }
+
+    fun checkUpdates() = apiReq(ApiService.CLIENT::checkUpdates)
 }

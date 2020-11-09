@@ -98,6 +98,6 @@ dependencies {
     //this is for pre lollipop tls1.2 //this is a Google lib that implementing BoringSSL //ADD 3mb to app size
     //implementation 'org.conscrypt:conscrypt-android:2.2.1'
 
-
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'com.android.support:multidex:1.0.3'
 }

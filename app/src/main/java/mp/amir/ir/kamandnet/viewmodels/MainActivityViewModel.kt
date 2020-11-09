@@ -3,20 +3,45 @@ package mp.amir.ir.kamandnet.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import mp.amir.ir.kamandnet.models.UpdateResponse
+import mp.amir.ir.kamandnet.models.api.Entity
 import mp.amir.ir.kamandnet.respository.RemoteRepo
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.utils.general.DoubleTrigger
+import mp.amir.ir.kamandnet.utils.general.Event
 
 class MainActivityViewModel : ViewModel() {
 
+    private var isCheckedForUpdatesRequestActive = false
+
+    private var updateEvent: Event<Entity<UpdateResponse>> =
+        Event(Entity(UpdateResponse.NoResponse, false, null))
+
+    private val updateRequestEvent = MutableLiveData<Event<Unit>>()
+    val checkUpdateResponse = Transformations.switchMap(updateRequestEvent) {
+        isCheckedForUpdatesRequestActive = true
+        RemoteRepo.checkUpdates().map {
+            if (it?.isSucceed == false) {
+                isCheckedForUpdatesRequestActive = false
+            }
+            if (it != null) {
+                if (!updateEvent.peekContent().isSucceed) {
+                    updateEvent = Event(it)
+                }
+            }
+            updateEvent
+        }
+    }
 
 
     private val filterKey = MutableLiveData<String>()
     private val getInstructionsFromServerEvent = MutableLiveData<Unit>()
 
-    val getInstructionsFromServerResponse = Transformations.switchMap(getInstructionsFromServerEvent) {
-        RemoteRepo.getInstructions()
-    }
+    val getInstructionsFromServerResponse =
+        Transformations.switchMap(getInstructionsFromServerEvent) {
+            RemoteRepo.getInstructions()
+        }
 
     val instructions =
         Transformations.switchMap(DoubleTrigger(filterKey, InstructionsRepo.allInstructions)) {
@@ -37,5 +62,11 @@ class MainActivityViewModel : ViewModel() {
 
     fun getInstructionsFromServer() {
         getInstructionsFromServerEvent.value = Unit
+    }
+
+    fun checkUpdates() {
+        if (false) { //TODO delete this line after Server Implemented
+            updateRequestEvent.value = Event(Unit)
+        }
     }
 }

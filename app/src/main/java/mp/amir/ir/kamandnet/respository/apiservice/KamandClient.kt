@@ -1,5 +1,6 @@
 package mp.amir.ir.kamandnet.respository.apiservice
 
+import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
 import retrofit2.Response
@@ -8,8 +9,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 
-interface WewiClient {
-    //"app.wewi.ir"
+interface KamandClient {
     @POST(" ")
     @FormUrlEncoded
     suspend fun login(
@@ -19,6 +19,9 @@ interface WewiClient {
         @Field("act") action: String,
         @Field("username_type") usernameType: String
     ): Response<Entity<User>>
+
+    @POST("AppVersion/FindLastAppVersion")
+    suspend fun checkUpdates(): Response<Entity<UpdateResponse>>
 
 }
 

@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 import androidx.multidex.MultiDexApplication
 import mp.amir.ir.kamandnet.R
+import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 
@@ -33,6 +34,7 @@ class KamandApplication : MultiDexApplication() {
         super.onCreate()
         PrefManager.setContext(applicationContext)
         InstructionsRepo.setContext(applicationContext)
+        ApiService.setContext(applicationContext)
 
     }
 
