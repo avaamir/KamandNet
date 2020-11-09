@@ -42,23 +42,27 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
 
     }
 
+    override fun onBackPressed() {
+        //TODO if has change show dialog
+        alert(
+            "توجه",
+            "تغییرات ذخیره شود؟",
+            "بله",
+            "خیر",
+            true,
+            {
+                super.onBackPressed()
+            },
+            {
+                //TODO save pics to memory and has address in db
+                //TODO save to DB
+                super.onBackPressed()
+            })
+    }
+
     private fun initViews() {
         mBinding.ivBack.setOnClickListener {
-            //TODO if has change show dialog
-            alert(
-                "توجه",
-                "تغییرات ذخیره شود؟",
-                "بله",
-                "خیر",
-                false,
-                {
-                    finish()
-                },
-                {
-                    //TODO save pics to memory and has address in db
-                    //TODO save to DB
-                    finish()
-                })
+            super.onBackPressed()
         }
 
         mBinding.frameAddPic.setOnClickListener {

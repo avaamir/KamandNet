@@ -2,23 +2,40 @@ package mp.amir.ir.kamandnet.ui.activities
 
 import android.Manifest
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.text.Editable
+import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mikepenz.materialdrawer.AccountHeader
+import com.mikepenz.materialdrawer.AccountHeaderBuilder
+import com.mikepenz.materialdrawer.Drawer
+import com.mikepenz.materialdrawer.DrawerBuilder
+import com.mikepenz.materialdrawer.holder.BadgeStyle
+import com.mikepenz.materialdrawer.holder.StringHolder
+import com.mikepenz.materialdrawer.model.DividerDrawerItem
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_main.*
 import mp.amir.ir.kamandnet.BuildConfig
 import mp.amir.ir.kamandnet.R
+import mp.amir.ir.kamandnet.app.KamandApplication
 import mp.amir.ir.kamandnet.databinding.ActivityMainBinding
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
+import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.respository.UserConfigs
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter
@@ -34,8 +51,6 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
     companion object {
         private const val REQ_GO_TO_SETTINGS_PERMISSION = 14
-
-
     }
 
     private val mAdapter = InstructionsAdapter(this)
@@ -44,11 +59,95 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var mBinding: ActivityMainBinding
 
-    private val permissionHelper = PermissionHelper( arrayListOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    ), this,this)
+    private val permissionHelper = PermissionHelper(
+        arrayListOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ), this, this
+    )
+
+    // drawer
+    private lateinit var mDrawer: Drawer
+    private lateinit var tvNameDrawer: TextView
+    private lateinit var ivProfile: ImageView
+    private val drawerHome by lazy {
+        PrimaryDrawerItem()
+            .withName("خانه")
+            .withIcon(R.drawable.ic_homepage_)
+            .withTypeface(iransansLight)
+            .withTextColor(ContextCompat.getColor(this, R.color.gray900))
+            .withOnDrawerItemClickListener { _, _, _ ->
+                mDrawer.closeDrawer()
+                true
+            }
+    }
+    private val drawerShowProfile by lazy {
+        PrimaryDrawerItem()
+            .withName("نمایش پروفایل")
+            .withIcon(R.drawable.ic_person_colored)
+            .withTypeface(iransansLight)
+            .withTextColor(ContextCompat.getColor(this, R.color.gray900))
+            .withOnDrawerItemClickListener { _, _, _ ->
+                toast("not yet implemeted")
+                true
+            }
+    }
+    private val drawerMessages by lazy {
+        PrimaryDrawerItem()
+            .withName("پیام ها")
+            .withIcon(R.drawable.ic_message)
+            //.withBadge(StringHolder(viewModel.messageCount.value?.toString() ?: "0"))
+            //.withBadgeStyle(BadgeStyle().withTextColor(ContextCompat.getColor(this, R.color.red)))
+            .withTypeface(iransansLight)
+            .withTextColor(ContextCompat.getColor(this, R.color.gray900))
+            .withOnDrawerItemClickListener { _, _, _ ->
+                val intent = Intent(this@MainActivity, MessageActivity::class.java)
+                startActivity(intent)
+                true
+            }
+    }
+    private val drawerAboutUs by lazy {
+        PrimaryDrawerItem()
+            .withName("درباره ما")
+            .withIcon(R.drawable.ic_drawer_about_us)
+            .withTypeface(iransansLight)
+            .withTextColor(ContextCompat.getColor(this, R.color.gray900))
+            .withOnDrawerItemClickListener { _, _, _ ->
+                startActivity(Intent(this@MainActivity, AboutUsActivity::class.java))
+                //todo override pending transition
+                true
+            }
+    }
+    private val drawerLogout by lazy {
+        PrimaryDrawerItem()
+            .withName("خروج از حساب کاربری")
+            .withIcon(R.drawable.ic_darwer_logout)
+            .withTypeface(iransansLight)
+            .withTextColor(ContextCompat.getColor(this, R.color.gray900))
+            .withOnDrawerItemClickListener { _, _, _ ->
+                mDrawer.setSelection(drawerHome)
+                mDrawer.closeDrawer()
+                Handler().postDelayed({
+                    alert(
+                        "خروج از حساب",
+                        "آیا از حساب کاربری خود خارج میشوید؟",
+                        "بله، خارج میشوم",
+                        "خیر",
+                        true,
+                        null
+                    ) {
+                        viewModel.logout()
+                    }
+                }, 10)
+                true
+            } // خروج از حساب کاربری
+    }
+
+    //Typefaces
+    private val iransansMedium: Typeface get() = (application as KamandApplication).iransansMedium
+    private val iransansLight: Typeface get() = (application as KamandApplication).iransansLight
+    private val belham: Typeface get() = (application as KamandApplication).belham
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,17 +164,37 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
         initViews()
         initToolbarButtons()
+        initDrawer(viewModel.user)
         subscribeObservers()
 
         viewModel.getInstructionsFromServer()
         permissionHelper.checkPermission()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (::mDrawer.isInitialized) {
+            if (mDrawer.isDrawerOpen) {
+                mDrawer.closeDrawer()
+            }
+            mDrawer.setSelection(drawerHome)
+        }
+    }
+
     override fun onBackPressed() {
-        if (isSearchShown) {
-            closeSearchBar()
-        } else {
-            super.onBackPressed()
+        when {
+            ::mDrawer.isInitialized -> {
+                if (mDrawer.isDrawerOpen) {
+                    mDrawer.closeDrawer()
+                }
+                mDrawer.setSelection(drawerHome)
+            }
+            isSearchShown -> {
+                closeSearchBar()
+            }
+            else -> {
+                super.onBackPressed()
+            }
         }
     }
 
@@ -157,12 +276,12 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
     private fun initToolbarButtons() {
 
-        /*ivNavigate.setOnClickListener {
+        ivNavigate.setOnClickListener {
             if (!mDrawer.isDrawerOpen) {
                 mDrawer.openDrawer()
             }
-            viewModel.updateUserProfile()
-        }*/
+            //viewModel.updateUserProfile()
+        }
 
         ivSearch.setOnClickListener {
             isSearchShown = true
@@ -211,6 +330,60 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         frame_toolbar_buttons.visibility = View.VISIBLE
         hideSoftKeyboard()
         etSearch.text.clear()
+    }
+
+
+    private fun initDrawer(user: User) {
+        val headerResult: AccountHeader =
+            AccountHeaderBuilder()
+                .withActivity(this)
+                .withAccountHeader(R.layout.material_drawer_header_logged_in)
+                .withSelectionListEnabledForSingleProfile(false)
+                .withHeaderBackground(R.drawable.toolbar_gradient)
+                .withNameTypeface(iransansLight)
+                .withTextColor(ContextCompat.getColor(this, R.color.white))
+                .build()
+
+
+        val drawerProfile = headerResult.view.findViewById<RelativeLayout>(R.id.text_layout)
+        tvNameDrawer = headerResult.view.findViewById(R.id.user_fullName_text)
+        tvNameDrawer.typeface = iransansMedium
+
+        val showProfileText =
+            headerResult.view.findViewById<TextView>(R.id.show_profile_text)
+        showProfileText.typeface = iransansLight
+
+        ivProfile = headerResult.view.findViewById(R.id.main_activity_profile_image)
+        drawerProfile.setOnClickListener {
+            toast("not yet implemented")
+        }
+        tvNameDrawer.text = user.name
+        loadProfilePic(ivProfile, user.profilePic)
+
+        val headerAppName = headerResult.view.findViewById<TextView>(R.id.header_app_name)
+        headerAppName.typeface = belham
+        //
+        mDrawer = DrawerBuilder()
+            .withDrawerGravity(Gravity.END)
+            .withActivity(this)
+            .withTranslucentStatusBar(true)
+            .withActionBarDrawerToggle(true)
+            .withAccountHeader(headerResult)
+            .withDisplayBelowStatusBar(false)
+            .withSelectedItem(-1)
+            .build()
+
+        mDrawer.addItems(
+            drawerHome,
+            DividerDrawerItem(),
+            drawerShowProfile,
+            DividerDrawerItem(),
+            drawerMessages,
+            DividerDrawerItem(),
+            drawerAboutUs,
+            drawerLogout
+        )
+
     }
 
     override fun onInstructionItemClicked(item: Instruction) {
@@ -292,9 +465,6 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
             permissionHelper.checkPermission()
         }
     }
-
-
-
 
 
 }

@@ -1,17 +1,22 @@
 package mp.amir.ir.kamandnet.viewmodels
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import androidx.lifecycle.*
 import mp.amir.ir.kamandnet.models.UpdateResponse
+import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
 import mp.amir.ir.kamandnet.respository.RemoteRepo
+import mp.amir.ir.kamandnet.respository.UserConfigs
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.utils.general.DoubleTrigger
 import mp.amir.ir.kamandnet.utils.general.Event
 
 class MainActivityViewModel : ViewModel() {
+
+    val user: User get() = UserConfigs.user.value!!
+
+    //TODO read from db
+    val messageCount: LiveData<String> = MutableLiveData()
+
 
     private var isCheckedForUpdatesRequestActive = false
 
@@ -68,5 +73,9 @@ class MainActivityViewModel : ViewModel() {
         if (false) { //TODO delete this line after Server Implemented
             updateRequestEvent.value = Event(Unit)
         }
+    }
+
+    fun logout() {
+        TODO("Not yet implemented")
     }
 }
