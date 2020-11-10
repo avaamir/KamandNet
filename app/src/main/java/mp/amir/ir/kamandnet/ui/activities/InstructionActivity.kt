@@ -21,6 +21,7 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
 
     companion object {
         private const val CAPTURE_IMAGE_REQ = 12
+        private const val QR_SCANNER_REQ = 13
     }
 
     private var turn = 0
@@ -93,6 +94,12 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
                     toast("خطایی به وجود آمد")
                 }
             }
+        } else if (requestCode == QR_SCANNER_REQ) {
+            if (resultCode == RESULT_OK) {
+                val qrCode = data?.extras?.get(Constants.INTENT_QR_SCANNER_TEXT) as  String
+                //TODO check the qr code with server code
+                toast(qrCode)
+            }
         }
 
 
@@ -119,7 +126,7 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
     }
 
     override fun onQRClicked() {
-        toast("Not yet implemented QR")
+        startActivityForResult(Intent(this, QRScannerActivity::class.java), QR_SCANNER_REQ)
     }
 
     override fun onNFCClicked() {

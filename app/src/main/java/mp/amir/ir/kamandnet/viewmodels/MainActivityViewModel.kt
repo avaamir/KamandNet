@@ -12,7 +12,7 @@ import mp.amir.ir.kamandnet.utils.general.Event
 
 class MainActivityViewModel : ViewModel() {
 
-    val user: User get() = UserConfigs.user.value!!
+    val user: User get() = UserConfigs.userVal!!
 
     //TODO read from db
     val messageCount: LiveData<String> = MutableLiveData()

@@ -70,7 +70,7 @@ object RemoteRepo {
     fun login(username: String, password: String, onResponse: (Entity<User?>?) -> Unit) {
         if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
         val user = fakeUser(username)
-        PrefManager.saveUser(user)
+        UserConfigs.loginUser(user)
         onResponse(Entity(user, true, ""))
         //TODO connect it to server
     }

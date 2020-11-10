@@ -9,6 +9,11 @@ import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 object UserConfigs {
     private val userLive = MutableLiveData<User?>(null)
     val user: LiveData<User?> get() = userLive
+
+    private var mUserVal : User? = null
+    val userVal get() = mUserVal
+
+
     val isLoggedIn get() = PrefManager.isUserLoggedIn
 
     init {
@@ -34,6 +39,7 @@ object UserConfigs {
     private fun afterLoggedInDo(user: User) {
         ApiService.setToken(user.token)
         userLive.value = user
+        mUserVal = user
     }
 
 

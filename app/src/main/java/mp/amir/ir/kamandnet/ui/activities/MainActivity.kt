@@ -24,8 +24,6 @@ import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
-import com.mikepenz.materialdrawer.holder.BadgeStyle
-import com.mikepenz.materialdrawer.holder.StringHolder
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_main.*
@@ -183,10 +181,8 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
     override fun onBackPressed() {
         when {
-            ::mDrawer.isInitialized -> {
-                if (mDrawer.isDrawerOpen) {
-                    mDrawer.closeDrawer()
-                }
+            ::mDrawer.isInitialized && mDrawer.isDrawerOpen -> {
+                mDrawer.closeDrawer()
                 mDrawer.setSelection(drawerHome)
             }
             isSearchShown -> {
