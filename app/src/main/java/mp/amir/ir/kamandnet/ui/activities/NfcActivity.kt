@@ -24,7 +24,7 @@ class NfcActivity : AppCompatActivity() {
         setContentView(R.layout.activity_nfc)
 
         if (hasNFC()) {
-            startReading()
+           // startReading()
             mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
             if (mNfcAdapter == null) {
                 //do something if there are no nfc module on device

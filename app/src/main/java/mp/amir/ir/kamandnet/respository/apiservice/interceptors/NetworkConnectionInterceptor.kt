@@ -5,15 +5,13 @@ import okhttp3.Request
 import okhttp3.Response
 
 
-abstract class NetworkConnectionInterceptor : Interceptor {
-
-    abstract fun isInternetAvailable(): Boolean
+abstract class NetworkConnectionInterceptor(private val iNetworkAvailability: INetworkAvailability) : Interceptor {
 
     abstract fun onInternetUnavailable()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         var request: Request = chain.request()
-        if (!isInternetAvailable()) {
+        if (!iNetworkAvailability.isInternetAvailable()) {
             onInternetUnavailable()
             request = request.newBuilder().header(
                 "Cache-Control",
@@ -27,5 +25,9 @@ abstract class NetworkConnectionInterceptor : Interceptor {
             return response
         }
         return chain.proceed(request)
+    }
+
+    interface INetworkAvailability {
+        fun isInternetAvailable(): Boolean
     }
 }

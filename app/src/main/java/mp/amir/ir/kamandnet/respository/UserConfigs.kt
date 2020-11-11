@@ -38,7 +38,7 @@ object UserConfigs {
 
     private fun afterLoggedInDo(user: User) {
         ApiService.setToken(user.token)
-        userLive.value = user
+        userLive.postValue(user)
         mUserVal = user
     }
 

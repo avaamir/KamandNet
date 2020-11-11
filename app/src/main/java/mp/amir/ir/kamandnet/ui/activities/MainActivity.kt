@@ -35,7 +35,6 @@ import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.respository.UserConfigs
-import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter
 import mp.amir.ir.kamandnet.ui.customs.animations.closeReveal
 import mp.amir.ir.kamandnet.ui.customs.animations.startReveal
@@ -230,13 +229,13 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
                             finish()
                         }
                     } else {
-                        if (ApiService.isNetworkAvailable()) {
+                        if (isNetworkAvailable()) {
                             viewModel.checkUpdates()
                         }
                         //TODO show proper message
                     }
                 } else {
-                    if (ApiService.isNetworkAvailable()) {
+                    if (isNetworkAvailable()) {
                         viewModel.checkUpdates()
                     }
                     //TODO show proper message
@@ -435,7 +434,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
     }
 
     override fun onPermissionsGranted() {
-        if (ApiService.isNetworkAvailable())
+        if (isNetworkAvailable())
             viewModel.checkUpdates()
     }
 

@@ -11,15 +11,12 @@ import mp.amir.ir.kamandnet.models.Instruction
 
 object InstructionsRepo {
     private lateinit var job: Job
-    private var context: Context? = null
 
-    private val dao: InstructionDao by lazy {
-        InstructionDatabase.getInstance(context!!).getDao().also { context = null }
-    }
+    private lateinit var dao: InstructionDao
 
 
-    fun setContext(context: Context) {
-        this.context = context.applicationContext
+    fun init(context: Context) {
+        dao = InstructionDatabase.getInstance(context).getDao()
     }
 
     val allInstructions: LiveData<List<Instruction>> by lazy {

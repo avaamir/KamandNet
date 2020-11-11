@@ -5,15 +5,11 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 
-@Entity(tableName = "user_tb")
 data class User(
-    @PrimaryKey
-    @SerializedName("personId")
-    var id: String,
-    @SerializedName("name")
-    var name: String?,
+    @SerializedName("fullName")
+    val name: String,
     @SerializedName("token")
-    var token: String,
+    val token: String,
     @SerializedName("profilePic")
-    var profilePic: String?,
+    val profilePic: String?,
 )

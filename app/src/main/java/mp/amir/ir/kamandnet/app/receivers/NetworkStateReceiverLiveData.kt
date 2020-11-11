@@ -1,4 +1,4 @@
-package com.behraz.fastermixer.batch.app.receivers
+package mp.amir.ir.kamandnet.app.receivers
 
 import android.annotation.TargetApi
 import android.content.BroadcastReceiver
@@ -9,6 +9,8 @@ import android.content.IntentFilter
 import android.net.*
 import android.os.Build
 import androidx.lifecycle.LiveData
+import androidx.multidex.MultiDexApplication
+import mp.amir.ir.kamandnet.utils.general.isNetworkAvailable
 
 
 class NetworkStateReceiverLiveData(val context: Context) : LiveData<Boolean>() {
@@ -81,27 +83,6 @@ class NetworkStateReceiverLiveData(val context: Context) : LiveData<Boolean>() {
     }
 
     private fun updateConnection() {
-        postValue(isNetworkAvailable(context))
-    }
-
-    private fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val network = connectivityManager.activeNetwork ?: return false
-            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
-            return when {
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                //for other device how are able to connect with Ethernet
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                //for check internet over Bluetooth
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
-                else -> false
-            }
-        } else {
-            val nwInfo = connectivityManager.activeNetworkInfo ?: return false
-            return nwInfo.isConnected
-        }
+        postValue(context.isNetworkAvailable())
     }
 }

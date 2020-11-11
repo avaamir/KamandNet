@@ -6,9 +6,9 @@ import mp.amir.ir.kamandnet.utils.kamand.Constants
 class Entity<T> (
     @SerializedName("entity")
     val entity: T?,
-    @SerializedName("isSucceed")
+    @SerializedName("isSuccess")
     val isSucceed: Boolean,
-    @SerializedName("msg")
+    @SerializedName("message")
     private val _message: String?
 ) {
     val message get() = _message ?: Constants.SERVER_ERROR

@@ -1,4 +1,4 @@
-package com.behraz.fastermixer.batch.app.receivers
+package mp.amir.ir.kamandnet.app.receivers
 
 import android.content.Context
 import android.content.IntentFilter

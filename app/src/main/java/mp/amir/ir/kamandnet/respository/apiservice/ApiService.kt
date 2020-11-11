@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.multidex.MultiDexApplication
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
@@ -22,7 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object ApiService {
-    const val Domain = "http://app.wewi.ir/"
+    const val Domain = "http://microland.ir:87/api/"
     private const val BASE_API_URL = Domain
 
     private var event = Event(Unit)
@@ -31,11 +32,11 @@ object ApiService {
 
     private var token: String? = null
 
-    val CLIENT: KamandClient by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+    private lateinit var iNetworkAvailabilityImpl: NetworkConnectionInterceptor.INetworkAvailability
+
+    val client: KamandClient by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
         retrofitBuilder.build().create(KamandClient::class.java)
     }
-
-    private lateinit var connectivityManager: ConnectivityManager
 
 
     private val retrofitBuilder: Retrofit.Builder by lazy {
@@ -61,25 +62,17 @@ object ApiService {
                         if (UserConfigs.isLoggedIn) {
                             UserConfigs.logout()
                             token = null
-                            event =
-                                Event(
-                                    Unit
-                                )
+                            event = Event(Unit)
                         }
                         onUnauthorizedListener?.onUnauthorizedAction(event)
                     }
                 })
-                addInterceptor(object : NetworkConnectionInterceptor() {
-                    override fun isInternetAvailable(): Boolean {
-                        return isNetworkAvailable()
-                    }
-
+                addInterceptor(object : NetworkConnectionInterceptor(iNetworkAvailabilityImpl) {
                     override fun onInternetUnavailable() {
                         CoroutineScope(Main).launch {
                             internetConnectionListener?.onInternetUnavailable()
                         }
                     }
-
                 })
 
                 if (BuildConfig.DEBUG) {
@@ -124,30 +117,8 @@ object ApiService {
         }
     }
 
-
-    fun isNetworkAvailable(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val network = connectivityManager.activeNetwork ?: return false
-            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
-            return when {
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                //for other device how are able to connect with Ethernet
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                //for check internet over Bluetooth
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
-                else -> false
-            }
-        } else {
-            val nwInfo = connectivityManager.activeNetworkInfo ?: return false
-            return nwInfo.isConnected
-        }
-    }
-
-
-    fun setContext(context: Context) {
-        connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    fun init(iNetworkAvailability: NetworkConnectionInterceptor.INetworkAvailability) {
+        this.iNetworkAvailabilityImpl = iNetworkAvailability
     }
 
     interface OnUnauthorizedListener {

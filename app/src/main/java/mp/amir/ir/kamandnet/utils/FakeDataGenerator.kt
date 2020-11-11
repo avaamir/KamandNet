@@ -15,4 +15,4 @@ fun fakeInstructions() = listOf(
 )
 
 
- fun fakeUser(username: String): User = User("!", username, "lhiasdfihoashdf==fasdf", null)
+ fun fakeUser(username: String): User = User("!", username, null)

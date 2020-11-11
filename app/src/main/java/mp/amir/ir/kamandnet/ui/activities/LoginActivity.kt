@@ -7,11 +7,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityLoginBinding
+import mp.amir.ir.kamandnet.respository.apiservice.ApiService
+import mp.amir.ir.kamandnet.ui.dialogs.NoNetworkDialog
 import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.LoginActivityViewModel
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), ApiService.InternetConnectionListener {
     private lateinit var mBinding: ActivityLoginBinding
     private lateinit var viewModel: LoginActivityViewModel
 
@@ -37,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
                 password.isEmpty() -> toast("گذرواژه خود را وارد کنید")
                 else -> {
                     viewModel.login(username, password)
+                    mBinding.btnLogin.showProgressBar(true)
                 }
             }
 
@@ -46,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun subscribeObservers() {
         viewModel.loginResponse.observe(this, {
+            mBinding.btnLogin.showProgressBar(false)
             if (it != null) {
                 if (it.isSucceed) {
                     startActivity(Intent(this, MainActivity::class.java))
@@ -56,8 +60,13 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 snack(Constants.SERVER_ERROR) {
                     viewModel.loginAgain()
+                    mBinding.btnLogin.showProgressBar(true)
                 }
             }
         })
+    }
+
+    override fun onInternetUnavailable() {
+        NoNetworkDialog(this, R.style.my_alert_dialog).show()
     }
 }

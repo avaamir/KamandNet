@@ -2,9 +2,9 @@ package mp.amir.ir.kamandnet.utils.general
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
-import com.behraz.fastermixer.batch.app.receivers.GpsStateReceiverLiveData
-import com.behraz.fastermixer.batch.app.receivers.NetworkStateReceiverLiveData
-import com.behraz.fastermixer.batch.app.receivers.SignalStrengthReceiverLiveData
+import mp.amir.ir.kamandnet.app.receivers.GpsStateReceiverLiveData
+import mp.amir.ir.kamandnet.app.receivers.NetworkStateReceiverLiveData
+import mp.amir.ir.kamandnet.app.receivers.SignalStrengthReceiverLiveData
 
 fun FragmentActivity.subscribeNetworkStateChangeListener(onStateChanged: (Boolean) -> Unit) {
     NetworkStateReceiverLiveData(this).observe(this, Observer {

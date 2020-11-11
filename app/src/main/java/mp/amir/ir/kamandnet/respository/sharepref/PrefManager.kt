@@ -16,7 +16,7 @@ object PrefManager {
     val isUserLoggedIn get() = prefs.getString(USER_TAG, null) != null
 
 
-    fun setContext(context: Context) {
+    fun init(context: Context) {
         if (!this::prefs.isInitialized) {
             prefs = context.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE)
         }

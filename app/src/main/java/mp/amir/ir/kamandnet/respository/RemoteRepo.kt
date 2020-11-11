@@ -4,13 +4,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import mp.amir.ir.kamandnet.models.Instruction
-import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
+import mp.amir.ir.kamandnet.models.api.LoginRequest
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
-import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 import mp.amir.ir.kamandnet.utils.fakeInstructions
-import mp.amir.ir.kamandnet.utils.fakeUser
 import mp.amir.ir.kamandnet.utils.general.RunOnceLiveData
 import mp.amir.ir.kamandnet.utils.general.launchApi
 import retrofit2.Response
@@ -22,8 +20,8 @@ object RemoteRepo {
     private lateinit var serverJobs: CompletableJob
 
     private fun <ResM, ReqM> apiReq(
-        request: ReqM,
         requestFunction: KSuspendFunction1<ReqM, Response<Entity<ResM>>>,
+        request: ReqM,
         repoLevelHandler: ((Response<Entity<ResM>>) -> (Unit))? = null
     ): RunOnceLiveData<Entity<ResM>?> {
         if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
@@ -67,13 +65,31 @@ object RemoteRepo {
     }
 
 
-    fun login(username: String, password: String, onResponse: (Entity<User?>?) -> Unit) {
+    fun login(loginRequest: LoginRequest) =
+        apiReq(ApiService.client::login, loginRequest) {
+            val userEntity = it.body()
+            if (userEntity?.isSucceed == true) {
+                val user = userEntity.entity!!
+                UserConfigs.loginUser(user)
+            }
+        }
+
+    /*fun login(username: String, password: String, onResponse: (Entity<User>?) -> Unit) {
         if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
-        val user = fakeUser(username)
-        UserConfigs.loginUser(user)
-        onResponse(Entity(user, true, ""))
-        //TODO connect it to server
-    }
+        CoroutineScope(IO + serverJobs).launchApi({
+            val response = ApiService.client.login(LoginRequest(username, password))
+            val userEntity = response.body()
+            if (userEntity?.isSucceed == true) {
+                val user = userEntity.entity!!
+                UserConfigs.loginUser(user)
+            }
+            withContext(Main) {
+                onResponse(userEntity)
+            }
+        }, {
+            onResponse(null)
+        })
+    }*/
 
     fun logout(onResponse: (String?) -> Unit) {
         TODO("Not yet implemented")
@@ -94,5 +110,5 @@ object RemoteRepo {
         }
     }
 
-    fun checkUpdates() = apiReq(ApiService.CLIENT::checkUpdates)
+    fun checkUpdates() = apiReq(ApiService.client::checkUpdates)
 }
