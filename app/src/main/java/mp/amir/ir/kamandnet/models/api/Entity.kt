@@ -1,7 +1,7 @@
 package mp.amir.ir.kamandnet.models.api
 
 import com.google.gson.annotations.SerializedName
-import mp.amir.ir.kamandnet.utils.wewi.Constants
+import mp.amir.ir.kamandnet.utils.kamand.Constants
 
 class Entity<T> (
     @SerializedName("entity")

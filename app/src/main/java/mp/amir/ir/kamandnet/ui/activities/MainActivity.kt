@@ -41,7 +41,7 @@ import mp.amir.ir.kamandnet.ui.customs.animations.closeReveal
 import mp.amir.ir.kamandnet.ui.customs.animations.startReveal
 import mp.amir.ir.kamandnet.ui.customs.dialogs.LocationPermissionDialog
 import mp.amir.ir.kamandnet.utils.general.*
-import mp.amir.ir.kamandnet.utils.wewi.Constants
+import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.MainActivityViewModel
 
 class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,

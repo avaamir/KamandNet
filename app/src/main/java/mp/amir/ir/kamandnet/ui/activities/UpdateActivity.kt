@@ -11,7 +11,7 @@ import mp.amir.ir.kamandnet.ui.customs.dialogs.MyProgressDialog
 import mp.amir.ir.kamandnet.utils.general.AppUpdater
 import mp.amir.ir.kamandnet.utils.general.alert
 import mp.amir.ir.kamandnet.utils.general.toast
-import mp.amir.ir.kamandnet.utils.wewi.Constants
+import mp.amir.ir.kamandnet.utils.kamand.Constants
 
 class UpdateActivity : AppCompatActivity(), AppUpdater.Interactions {
     private lateinit var dialog: MyProgressDialog

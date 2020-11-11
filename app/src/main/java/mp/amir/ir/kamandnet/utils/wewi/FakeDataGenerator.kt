@@ -1,1 +1,0 @@
-package mp.amir.ir.kamandnet.utils.wewi

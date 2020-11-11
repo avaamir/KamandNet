@@ -19,7 +19,7 @@ import mp.amir.ir.kamandnet.ui.customs.osm.ImageMarker
 import mp.amir.ir.kamandnet.ui.customs.osm.MyOSMMapView
 import mp.amir.ir.kamandnet.utils.general.toast
 import mp.amir.ir.kamandnet.utils.map.MyMapTileSource
-import mp.amir.ir.kamandnet.utils.wewi.Constants
+import mp.amir.ir.kamandnet.utils.kamand.Constants
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.ITileSource
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory

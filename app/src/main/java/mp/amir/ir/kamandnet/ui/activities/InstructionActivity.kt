@@ -14,7 +14,7 @@ import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.ui.dialogs.QRorNFCDialog
 import mp.amir.ir.kamandnet.utils.general.alert
 import mp.amir.ir.kamandnet.utils.general.toast
-import mp.amir.ir.kamandnet.utils.wewi.Constants
+import mp.amir.ir.kamandnet.utils.kamand.Constants
 
 class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
 
@@ -22,6 +22,7 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
     companion object {
         private const val CAPTURE_IMAGE_REQ = 12
         private const val QR_SCANNER_REQ = 13
+        private const val NFC_SCANNER_REQ = 14
     }
 
     private var turn = 0
@@ -85,20 +86,30 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CAPTURE_IMAGE_REQ) {
-            if (resultCode == RESULT_OK) {
-                val bitmap = data?.extras?.get("data") as Bitmap?
-                if (bitmap != null) {
-                    onChoseImage(bitmap)
-                } else {
-                    toast("خطایی به وجود آمد")
+        when (requestCode) {
+            CAPTURE_IMAGE_REQ -> {
+                if (resultCode == RESULT_OK) {
+                    val bitmap = data?.extras?.get("data") as Bitmap?
+                    if (bitmap != null) {
+                        onChoseImage(bitmap)
+                    } else {
+                        toast("خطایی به وجود آمد")
+                    }
                 }
             }
-        } else if (requestCode == QR_SCANNER_REQ) {
-            if (resultCode == RESULT_OK) {
-                val qrCode = data?.extras?.get(Constants.INTENT_QR_SCANNER_TEXT) as  String
-                //TODO check the qr code with server code
-                toast(qrCode)
+            QR_SCANNER_REQ -> {
+                if (resultCode == RESULT_OK) {
+                    val qrCode = data?.extras?.get(Constants.INTENT_QR_SCANNER_TEXT) as String
+                    //TODO check the qr code with server code
+                    toast(qrCode)
+                }
+            }
+            NFC_SCANNER_REQ -> {
+                if (resultCode == RESULT_OK) {
+                    val nfcCode = data?.extras?.get(Constants.INTENT_NFC_SCANNER_TEXT) as String
+                    //TODO check the qr code with server code
+                    toast(nfcCode)
+                }
             }
         }
 
@@ -130,7 +141,7 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
     }
 
     override fun onNFCClicked() {
-        toast("Not yet implemented NFC")
+        startActivityForResult(Intent(this, NfcActivity::class.java), NFC_SCANNER_REQ)
     }
 
 

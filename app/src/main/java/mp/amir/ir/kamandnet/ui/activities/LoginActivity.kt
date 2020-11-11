@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityLoginBinding
 import mp.amir.ir.kamandnet.utils.general.*
-import mp.amir.ir.kamandnet.utils.wewi.Constants
+import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.LoginActivityViewModel
 
 class LoginActivity : AppCompatActivity() {

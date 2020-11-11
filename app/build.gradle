@@ -107,8 +107,8 @@ dependencies {
     //Image Compressor
     implementation 'id.zelory:compressor:3.0.0'
 
+
     implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'com.android.support:multidex:1.0.3'
 
-    implementation 'be.appfoundry:nfc-lib:1.1'
 }

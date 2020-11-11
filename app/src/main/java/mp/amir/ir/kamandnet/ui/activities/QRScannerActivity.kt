@@ -9,11 +9,9 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import kotlinx.android.synthetic.main.activity_q_r_scanner.*
-import kotlinx.coroutines.flow.combine
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.utils.general.toast
-import mp.amir.ir.kamandnet.utils.wewi.Constants
-import okhttp3.internal.format
+import mp.amir.ir.kamandnet.utils.kamand.Constants
 
 class QRScannerActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner
