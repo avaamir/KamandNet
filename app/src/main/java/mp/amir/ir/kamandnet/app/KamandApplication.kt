@@ -14,6 +14,7 @@ import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.apiservice.interceptors.NetworkConnectionInterceptor
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
+import mp.amir.ir.kamandnet.utils.general.isNetworkAvailable
 
 class KamandApplication : MultiDexApplication(), NetworkConnectionInterceptor.INetworkAvailability {
 
@@ -78,26 +79,6 @@ class KamandApplication : MultiDexApplication(), NetworkConnectionInterceptor.IN
             }
 
         })
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val network = connectivityManager.activeNetwork ?: return false
-            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
-            return when {
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                //for other device how are able to connect with Ethernet
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                //for check internet over Bluetooth
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
-                else -> false
-            }
-        } else {
-            val nwInfo = connectivityManager.activeNetworkInfo ?: return false
-            return nwInfo.isConnected
-        }
     }
 
     override fun isInternetAvailable() = isNetworkAvailable()

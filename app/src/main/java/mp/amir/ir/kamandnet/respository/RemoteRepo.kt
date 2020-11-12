@@ -30,7 +30,7 @@ object RemoteRepo {
                 CoroutineScope(IO + serverJobs).launchApi({
                     val response = requestFunction(request)
                     repoLevelHandler?.invoke(response)
-                    CoroutineScope(Main).launch {
+                    withContext(Main) {
                         value = response.body()
                     }
                 }) {
@@ -92,7 +92,8 @@ object RemoteRepo {
     }*/
 
     fun logout(onResponse: (String?) -> Unit) {
-        TODO("Not yet implemented")
+        //todo if succeed
+        UserConfigs.logout()
     }
 
     fun getInstructions(): RunOnceLiveData<Entity<List<Instruction>>?> {

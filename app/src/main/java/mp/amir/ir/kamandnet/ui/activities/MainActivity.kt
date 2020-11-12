@@ -136,6 +136,8 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
                         null
                     ) {
                         viewModel.logout()
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
                     }
                 }, 10)
                 true
@@ -186,6 +188,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
                 mDrawer.setSelection(drawerHome)
             }
             isSearchShown -> {
+                viewModel.filterList(null)
                 closeSearchBar()
             }
             else -> {
