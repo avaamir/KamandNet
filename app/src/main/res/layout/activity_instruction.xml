@@ -157,7 +157,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_margin="4dp"
-                        android:src="@drawable/ic_lock"
+                        android:src="@drawable/ic_camera"
                         app:tint="@color/item_pic_placeholder" />
 
                     <TextView
@@ -235,7 +235,7 @@
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            app:image="@drawable/ic_bug"
+            app:image="@drawable/ic_qr_code_scanner"
             app:isFlat="true"
             android:layout_alignParentBottom="true"
             app:text="اسکن و ثبت" />

@@ -153,7 +153,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
 
-
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnSync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="normal"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/medium_margin"
+            app:backgroundTint="@color/primary_light"
+            app:tint="@color/white"
+            android:src="@drawable/ic_sync"
+            />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
