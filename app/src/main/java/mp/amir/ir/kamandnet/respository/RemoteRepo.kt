@@ -8,7 +8,6 @@ import mp.amir.ir.kamandnet.models.api.Entity
 import mp.amir.ir.kamandnet.models.api.LoginRequest
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
-import mp.amir.ir.kamandnet.utils.fakeInstructions
 import mp.amir.ir.kamandnet.utils.general.RunOnceLiveData
 import mp.amir.ir.kamandnet.utils.general.launchApi
 import retrofit2.Response
@@ -52,7 +51,7 @@ object RemoteRepo {
                 CoroutineScope(IO + serverJobs).launchApi({
                     val response = requestFunction()
                     repoLevelHandler?.invoke(response)
-                    CoroutineScope(Main).launch {
+                    withContext(Main) {
                         value = response.body()
                     }
                 }) {
@@ -96,18 +95,10 @@ object RemoteRepo {
         UserConfigs.logout()
     }
 
-    fun getInstructions(): RunOnceLiveData<Entity<List<Instruction>>?> {
-        return object : RunOnceLiveData<Entity<List<Instruction>>?>() {
-            override fun onActiveRunOnce() {
-                CoroutineScope(IO).launch {
-                    delay(3000)
-                    val response = Entity(fakeInstructions(), true, "")
-                    if (response.isSucceed) {
-                        InstructionsRepo.insert(response.entity!!)
-                    }
-                    postValue(response)
-                }
-            }
+    fun getInstructions() = apiReq(ApiService.client::getInstructions) {
+        val response = it.body()
+        if (response?.isSucceed == true) {
+            InstructionsRepo.insert(response.entity!!)
         }
     }
 

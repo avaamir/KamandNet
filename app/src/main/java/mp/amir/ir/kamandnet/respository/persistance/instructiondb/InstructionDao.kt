@@ -29,6 +29,6 @@ interface InstructionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<Instruction>)
 
-    @Query("SELECT * FROM instructions WHERE name LIKE :keyword OR nodeInstance Like :keyword OR nodeType Like :keyword OR jobType Like :keyword OR repairType Like :keyword")
+    @Query("SELECT * FROM instructions WHERE nodeInstance Like :keyword OR nodeType Like :keyword OR jobType Like :keyword OR repairTypeTitle Like :keyword")
     fun search(keyword: String): LiveData<List<Instruction>>
 }

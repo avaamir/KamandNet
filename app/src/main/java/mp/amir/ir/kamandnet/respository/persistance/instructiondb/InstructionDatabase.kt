@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import mp.amir.ir.kamandnet.models.Instruction
 
 
-@Database(entities = [Instruction::class], version = 1, exportSchema = false)
+@Database(entities = [Instruction::class], version = 6, exportSchema = false)
 abstract class InstructionDatabase : RoomDatabase() {
 
     abstract fun getDao(): InstructionDao

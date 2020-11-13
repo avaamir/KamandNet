@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 tools:text="برق"
-                android:text="@{data.repairType}"
+                android:text="@{data.repairGroupTitle}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView"
                 app:layout_constraintEnd_toStartOf="@+id/textView"
                 app:layout_constraintTop_toTopOf="@+id/textView" />
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 tools:text="شروع شده"
-                android:text="@{data.status}"
+                android:text="@{data.stateTitle}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView6"
                 app:layout_constraintEnd_toStartOf="@+id/textView6"
                 app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="تاریخ و زمان اجرا:"
+                android:text="زمان اجرا:"
                 app:layout_constraintBottom_toTopOf="@+id/textView6"
                 app:layout_constraintStart_toEndOf="@+id/textView9"
                 app:layout_constraintTop_toTopOf="parent" />
