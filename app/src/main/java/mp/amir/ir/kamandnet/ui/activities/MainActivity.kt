@@ -35,16 +35,18 @@ import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.respository.UserConfigs
+import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter
 import mp.amir.ir.kamandnet.ui.customs.animations.closeReveal
 import mp.amir.ir.kamandnet.ui.customs.animations.startReveal
 import mp.amir.ir.kamandnet.ui.customs.dialogs.LocationPermissionDialog
+import mp.amir.ir.kamandnet.ui.dialogs.NoNetworkDialog
 import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.MainActivityViewModel
 
 class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
-    PermissionHelper.Interactions {
+    PermissionHelper.Interactions, ApiService.InternetConnectionListener, ApiService.OnUnauthorizedListener {
 
     companion object {
         private const val REQ_GO_TO_SETTINGS_PERMISSION = 14
@@ -465,5 +467,14 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         }
     }
 
+    override fun onUnauthorizedAction(event: Event<Unit>) {
+        event.getEventIfNotHandled()?.let {
+            toast("فرد دیگری با حساب کاربری شما وارد شده است. باید دوباره وارد شوید")
+            finish()
+        }
+    }
 
+    override fun onInternetUnavailable() {
+        NoNetworkDialog(this, R.style.my_alert_dialog).show()
+    }
 }
