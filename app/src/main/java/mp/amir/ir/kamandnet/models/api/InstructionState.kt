@@ -1,4 +1,4 @@
-package mp.amir.ir.kamandnet.models
+package mp.amir.ir.kamandnet.models.api
 
 enum class InstructionState(val id: Int) {
     Started(1),

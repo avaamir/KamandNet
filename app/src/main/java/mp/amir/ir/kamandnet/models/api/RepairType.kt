@@ -1,4 +1,4 @@
-package mp.amir.ir.kamandnet.models
+package mp.amir.ir.kamandnet.models.api
 
 enum class RepairType(val id: Int) {
     PM(1),
