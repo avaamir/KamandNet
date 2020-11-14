@@ -10,7 +10,13 @@ import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.utils.general.RunOnceLiveData
 import mp.amir.ir.kamandnet.utils.general.launchApi
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
+import java.io.File
 import kotlin.reflect.KSuspendFunction0
 import kotlin.reflect.KSuspendFunction1
 
@@ -23,9 +29,10 @@ object RemoteRepo {
         request: ReqM,
         repoLevelHandler: ((Response<Entity<ResM>>) -> (Unit))? = null
     ): RunOnceLiveData<Entity<ResM>?> {
-        if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
         return object : RunOnceLiveData<Entity<ResM>?>() {
             override fun onActiveRunOnce() {
+                if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs =
+                    Job()
                 CoroutineScope(IO + serverJobs).launchApi({
                     val response = requestFunction(request)
                     repoLevelHandler?.invoke(response)
@@ -45,9 +52,10 @@ object RemoteRepo {
         requestFunction: KSuspendFunction0<Response<Entity<ResM>>>,
         repoLevelHandler: ((Response<Entity<ResM>>) -> (Unit))? = null  //This will only excute if LiveData has an observer, because it called on active method
     ): RunOnceLiveData<Entity<ResM>?> {
-        if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
         return object : RunOnceLiveData<Entity<ResM>?>() {
             override fun onActiveRunOnce() {
+                if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs =
+                    Job()
                 CoroutineScope(IO + serverJobs).launchApi({
                     val response = requestFunction()
                     repoLevelHandler?.invoke(response)
@@ -103,4 +111,51 @@ object RemoteRepo {
     }
 
     fun checkUpdates() = apiReq(ApiService.client::checkUpdates)
+
+
+    fun submitInstruction2(){
+
+    }
+
+    fun submitInstruction(
+        id: Int,
+        description: String,
+        tagCode: String,
+        date: String,
+        images: List<File>
+    ): RunOnceLiveData<Entity<Any>?> {
+        val idPart = id.toString().toRequestBody("text/plane".toMediaTypeOrNull())
+        val descPart = description.toRequestBody("text/plane".toMediaTypeOrNull())
+        val tagPart = tagCode.toRequestBody("text/plane".toMediaTypeOrNull())
+        val datePart = date.toRequestBody("text/plane".toMediaTypeOrNull())
+        val imagesPart = arrayListOf<MultipartBody.Part>().apply {
+            images.forEachIndexed { index, file ->
+                val requestFile: RequestBody = file
+                    .asRequestBody("*/*".toMediaTypeOrNull()) //"image/jpg"
+
+                val part = MultipartBody.Part.createFormData("files$index", file.name, requestFile)
+                add(part)
+            }
+        }
+
+        return object : RunOnceLiveData<Entity<Any>?>() {
+            override fun onActiveRunOnce() {
+                if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
+                CoroutineScope(IO + serverJobs).launchApi({
+                    val response = ApiService.client.submitInstructions(
+                        idPart,
+                        descPart,
+                        tagPart,
+                        datePart,
+                        imagesPart
+                    )
+                    withContext(Main) {
+                        value = response.body()
+                    }
+                }, {
+                    postValue(null)
+                })
+            }
+        }
+    }
 }

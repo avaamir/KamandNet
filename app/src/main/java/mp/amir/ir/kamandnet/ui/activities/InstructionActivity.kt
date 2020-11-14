@@ -7,14 +7,20 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.item_pic_placeholder.view.*
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityInstructionBinding
 import mp.amir.ir.kamandnet.models.Instruction
+import mp.amir.ir.kamandnet.models.api.TagType
 import mp.amir.ir.kamandnet.ui.dialogs.QRorNFCDialog
 import mp.amir.ir.kamandnet.utils.general.alert
+import mp.amir.ir.kamandnet.utils.general.exhaustive
+import mp.amir.ir.kamandnet.utils.general.now
 import mp.amir.ir.kamandnet.utils.general.toast
 import mp.amir.ir.kamandnet.utils.kamand.Constants
+import mp.amir.ir.kamandnet.viewmodels.InstructionActivityViewModel
 
 class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
 
@@ -27,40 +33,26 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
 
     private var turn = 0
 
+    private lateinit var viewModel: InstructionActivityViewModel
     private lateinit var mBinding: ActivityInstructionBinding
-    private lateinit var instruction: Instruction
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instruction)
 
-
-        instruction = intent.getParcelableExtra(Constants.INTENT_INSTRUCTION_ACTIVITY_DATA)!!
-
+        viewModel = ViewModelProvider(this).get(InstructionActivityViewModel::class.java)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_instruction)
-        mBinding.instruction = instruction
+
+        if (viewModel.instruction == null)
+            viewModel.instruction =
+                intent.getParcelableExtra(Constants.INTENT_INSTRUCTION_ACTIVITY_DATA)!!
+
+        mBinding.instruction = viewModel.instruction
 
         initViews()
-
+        subscribeObservers()
     }
 
-    override fun onBackPressed() {
-        //TODO if has change show dialog
-        alert(
-            "توجه",
-            "تغییرات ذخیره شود؟",
-            "بله",
-            "خیر",
-            true,
-            {
-                super.onBackPressed()
-            },
-            {
-                //TODO save pics to memory and has address in db
-                //TODO save to DB
-                super.onBackPressed()
-            })
-    }
 
     private fun initViews() {
         mBinding.ivBack.setOnClickListener {
@@ -80,8 +72,55 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
         }
 
         mBinding.btnSave.setOnClickListener {
-            QRorNFCDialog(this, R.style.my_alert_dialog, this).show()
+            val description = mBinding.etDesc.text.toString().trim()
+            when (viewModel.instruction!!.tagType) {
+                TagType.None -> {
+                    mBinding.btnSave.showProgressBar(true)
+                    viewModel.submitInstruction(description)
+                }
+                TagType.QR -> startActivityForResult(
+                    Intent(this, QRScannerActivity::class.java),
+                    QR_SCANNER_REQ
+                )
+                TagType.NFC -> startActivityForResult(
+                    Intent(this, NfcActivity::class.java),
+                    NFC_SCANNER_REQ
+                )
+            }.exhaustive()
         }
+    }
+
+    private fun subscribeObservers() {
+        viewModel.submitInstructionResponse.observe(this, {
+            mBinding.btnSave.showProgressBar(false)
+            if (it != null) {
+                if (it.isSucceed) {
+                    //TODO should update LocalRepo and delete this flow from LOCAL DB then finish activity
+                } else {
+                    //TODO
+                }
+            } else {
+
+            }
+        })
+    }
+
+    override fun onBackPressed() {
+        //TODO if has change show dialog
+        alert(
+            "توجه",
+            "تغییرات ذخیره شود؟",
+            "بله",
+            "خیر",
+            true,
+            {
+                super.onBackPressed()
+            },
+            {
+                //TODO save pics to memory and has address in db
+                //TODO save to DB
+                super.onBackPressed()
+            })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -134,14 +173,6 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
         chosenFrame.framePlaceHolder.visibility = View.GONE
         chosenFrame.framePic.visibility = View.VISIBLE
         chosenFrame.framePic.ivPic.setImageBitmap(bitmap)
-    }
-
-    override fun onQRClicked() {
-        startActivityForResult(Intent(this, QRScannerActivity::class.java), QR_SCANNER_REQ)
-    }
-
-    override fun onNFCClicked() {
-        startActivityForResult(Intent(this, NfcActivity::class.java), NFC_SCANNER_REQ)
     }
 
 

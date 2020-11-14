@@ -43,7 +43,7 @@ data class Instruction(
     val repairGroupTitle: String,
 
     ) : Parcelable {
-    val name get() = "$jobType-$nodeInstance"
+    val name get() = "$jobType $nodeType"
 
     val repairType get() = getEnumById(RepairType::id, _repairTypeId)
 
