@@ -1,12 +1,14 @@
 package mp.amir.ir.kamandnet.models
 
 import android.os.Parcelable
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import mp.amir.ir.kamandnet.models.api.InstructionState
 import mp.amir.ir.kamandnet.models.api.RepairType
+import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
 import mp.amir.ir.kamandnet.models.api.TagType
 import mp.amir.ir.kamandnet.utils.general.getEnumById
 
@@ -42,7 +44,10 @@ data class Instruction(
     @SerializedName("repairGroupTitle")
     val repairGroupTitle: String,
 
-    ) : Parcelable {
+    @Embedded
+    val submitFlowModel: SubmitFlowModel?
+
+) : Parcelable {
     val name get() = "$jobType $nodeType"
 
     val repairType get() = getEnumById(RepairType::id, _repairTypeId)
@@ -52,5 +57,7 @@ data class Instruction(
 
     val state: InstructionState
         get() = getEnumById(InstructionState::id, _requestStateId)
+
+    val canUpload get() = tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode)
 
 }

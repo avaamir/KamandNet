@@ -30,11 +30,11 @@ interface KamandClient {
     @POST("NotImplemented")
     @Multipart
     suspend fun submitInstructions(
-        @Part("id") id: RequestBody?,
-        @Part("description") description: RequestBody?,
-        @Part("tagCode") tagCode: RequestBody?,
-        @Part("date") doneDate: RequestBody?,
-        @Part images: List<MultipartBody.Part>
+        @Part("id") id: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("tagCode") tagCode: RequestBody,
+        @Part("finishDate") doneDate: RequestBody,
+        @Part images: List<MultipartBody.Part>?
     ): Response<Entity<Any>>
 
     @POST("NotImplemented")

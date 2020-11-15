@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import mp.amir.ir.kamandnet.models.Instruction
+import mp.amir.ir.kamandnet.respository.persistance.typeconverter.FileListTypeConverter
 
-
-@Database(entities = [Instruction::class], version = 6, exportSchema = false)
+@TypeConverters(FileListTypeConverter::class)
+@Database(entities = [Instruction::class], version = 10, exportSchema = false)
 abstract class InstructionDatabase : RoomDatabase() {
 
     abstract fun getDao(): InstructionDao

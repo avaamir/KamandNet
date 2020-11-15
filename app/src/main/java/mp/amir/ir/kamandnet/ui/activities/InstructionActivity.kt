@@ -22,7 +22,7 @@ import mp.amir.ir.kamandnet.utils.general.toast
 import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.InstructionActivityViewModel
 
-class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
+class InstructionActivity : AppCompatActivity() {
 
 
     companion object {
@@ -91,7 +91,7 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
     }
 
     private fun subscribeObservers() {
-        viewModel.submitInstructionResponse.observe(this, {
+        /*viewModel.submitInstructionResponse.observe(this, {
             mBinding.btnSave.showProgressBar(false)
             if (it != null) {
                 if (it.isSucceed) {
@@ -102,7 +102,7 @@ class InstructionActivity : AppCompatActivity(), QRorNFCDialog.Interactions {
             } else {
 
             }
-        })
+        })*/
     }
 
     override fun onBackPressed() {
