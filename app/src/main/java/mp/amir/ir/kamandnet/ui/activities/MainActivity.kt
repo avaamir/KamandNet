@@ -217,7 +217,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
                             it.submitFlowModel == null -> {
                                 toast("hichi sabt nashode")
                             }
-                            it.submitFlowModel!!.description == null -> {
+                            it.submitFlowModel!!.description == null -> { //TODO empty budan ham check savad
                                 toast("desc null hast")
                             }
                             it.submitFlowModel!!.scannedTagCode == null -> {
