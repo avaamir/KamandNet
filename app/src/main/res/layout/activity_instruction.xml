@@ -127,6 +127,7 @@
                         android:layout_margin="8dp"
                         android:fontFamily="@font/iransans"
                         android:gravity="right|top"
+                        android:text="@{instruction.submitFlowModel.description}"
                         android:hint="شرح کار را بنویسید.."
                         android:lines="5"
                         android:maxLength="500"

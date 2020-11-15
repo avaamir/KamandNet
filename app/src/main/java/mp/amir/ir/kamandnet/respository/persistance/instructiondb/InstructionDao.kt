@@ -7,6 +7,9 @@ import mp.amir.ir.kamandnet.models.Instruction
 @Dao
 interface InstructionDao {
 
+    @Query("SELECT * FROM instructions WHERE id=:id")
+    fun getItemById(id: Int): LiveData<Instruction>
+
     @get:Query("SELECT * FROM instructions")
     val allInstruction: LiveData<List<Instruction>>
 
@@ -24,7 +27,6 @@ interface InstructionDao {
 
     @Query("SELECT * FROM instructions WHERE id = :id")
     suspend fun exists(id: Int): Instruction?
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<Instruction>)

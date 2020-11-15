@@ -23,6 +23,9 @@ object InstructionsRepo {
         dao.allInstruction
     }
 
+    fun getInstructionById(id: Int): LiveData<Instruction> = dao.getItemById(id)
+
+
     fun insert(items: List<Instruction>) {
         if (!::job.isInitialized || !job.isActive)
             job = Job()

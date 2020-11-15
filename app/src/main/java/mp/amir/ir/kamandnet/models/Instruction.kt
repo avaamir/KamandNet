@@ -17,7 +17,7 @@ import mp.amir.ir.kamandnet.utils.general.getEnumById
 data class Instruction(
     @PrimaryKey
     @SerializedName("requestId")
-    val id: Int,
+    val id: Int, //TODO momkene niaz bashe userID ro ham be requestID ezafe konim, chun momkene gushi maslan sobh ha dast ye nafar bashe shift shab dast yeki dg, YANNI id mishe userID+RequestID
     @SerializedName("repairTypeTitle")
     val repairTypeTitle: String, //em, pm ..
     @SerializedName("operationTypeTitle")
@@ -45,7 +45,7 @@ data class Instruction(
     val repairGroupTitle: String,
 
     @Embedded
-    val submitFlowModel: SubmitFlowModel?
+    var submitFlowModel: SubmitFlowModel?
 
 ) : Parcelable {
     val name get() = "$jobType $nodeType"
@@ -59,5 +59,4 @@ data class Instruction(
         get() = getEnumById(InstructionState::id, _requestStateId)
 
     val canUpload get() = tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode)
-
 }

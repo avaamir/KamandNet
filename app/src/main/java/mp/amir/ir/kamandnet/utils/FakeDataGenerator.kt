@@ -1,6 +1,5 @@
 package mp.amir.ir.kamandnet.utils
 
-import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.User
 
 /*fun fakeInstructions() = listOf(
@@ -9,4 +8,4 @@ import mp.amir.ir.kamandnet.models.User
 )*/
 
 
- fun fakeUser(username: String): User = User("!", username, null)
+fun fakeUser(username: String): User = User("!", username, "", null)

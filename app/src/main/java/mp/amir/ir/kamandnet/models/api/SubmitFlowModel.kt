@@ -9,12 +9,10 @@ import java.io.File
 
 @Parcelize
 data class SubmitFlowModel(
-    @ColumnInfo(name = "receiver_uid")
-    val userId: String?,
     @ColumnInfo(name = "user_flow_desc")
-    val description: String?,
-    val scannedTagCode: String?,
-    val doneDate: String?,
+    var description: String? = null,
+    var scannedTagCode: String? = null,
+    var doneDate: String? = null,
     @TypeConverters(FileListTypeConverter::class)
-    val images: List<File>?
+    val images: ArrayList<File> = arrayListOf()
 ) : Parcelable

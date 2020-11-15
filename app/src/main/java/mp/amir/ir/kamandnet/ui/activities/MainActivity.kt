@@ -390,7 +390,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
     override fun onInstructionItemClicked(item: Instruction) {
         startActivity(
             Intent(this, InstructionActivity::class.java).apply {
-                putParcelableExtra(Constants.INTENT_INSTRUCTION_ACTIVITY_DATA, item)
+                putParcelableExtra(Constants.INTENT_INSTRUCTION_DATA, item)
             }
         )
     }

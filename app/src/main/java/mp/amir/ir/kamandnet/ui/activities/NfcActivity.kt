@@ -10,7 +10,9 @@ import android.nfc.tech.NdefFormatable
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import mp.amir.ir.kamandnet.R
+import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.utils.general.toast
+import mp.amir.ir.kamandnet.utils.kamand.Constants
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.util.*
@@ -19,6 +21,7 @@ import java.util.*
 class NfcActivity : AppCompatActivity() {
 
 
+    private lateinit var instruction: Instruction
     private val shouldRead = true
 
     private var mNfcAdapter: NfcAdapter? = null
@@ -38,7 +41,8 @@ class NfcActivity : AppCompatActivity() {
             toast("لطفا NFC دستگاه خود را روشن کنید")
         }
 
-
+        if (!::instruction.isInitialized)
+            instruction = intent.getParcelableExtra(Constants.INTENT_INSTRUCTION_DATA)!!
     }
 
     private fun readNFC(intent: Intent?) {
@@ -56,7 +60,16 @@ class NfcActivity : AppCompatActivity() {
             val record = records[0]
             //val tagContent = getTextFromNdefRecord(record)
             val tagContent = String(record.payload)
-            toast(tagContent) //TODO this is the content
+            toast(tagContent) //TODO this is the content //TODO delete this line
+            if (instruction.tagCode == tagContent) {
+                setResult(
+                    RESULT_OK,
+                    Intent().putExtra(Constants.INTENT_SCAN_TAG_RESULT_TEXT, tagContent)
+                )
+                finish()
+            } else {
+                toast("این تگ مربوطه به این دستورکار نمیباشد")
+            }
         } else {
             toast("no NDEF records found!")
         }
