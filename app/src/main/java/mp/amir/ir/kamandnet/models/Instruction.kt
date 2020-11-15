@@ -60,6 +60,6 @@ data class Instruction(
     val state: InstructionState
         get() = getEnumById(InstructionState::id, _requestStateId)
 
-    val canUpload get() = tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode)
+    val canUpload get() = (tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode))
             && !submitFlowModel?.description.isNullOrEmpty()
 }

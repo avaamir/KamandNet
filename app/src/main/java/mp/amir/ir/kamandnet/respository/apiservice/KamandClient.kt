@@ -27,11 +27,11 @@ interface KamandClient {
     @POST("AppVersion/FindLastAppVersion")
     suspend fun checkUpdates(): Response<Entity<UpdateResponse>>
 
-    @POST("NotImplemented")
+    @POST("RepairRequest/AddRepairLog")
     @Multipart
     suspend fun submitInstructions(
-        @Part("id") id: RequestBody,
-        @Part("description") description: RequestBody,
+        @Part("RequestId") id: RequestBody,
+        @Part("Description") description: RequestBody,
         @Part("tagCode") tagCode: RequestBody?,
         @Part("finishDate") doneDate: RequestBody,
         @Part images: List<MultipartBody.Part>?

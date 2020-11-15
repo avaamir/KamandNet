@@ -247,7 +247,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
 
         viewModel.submitInstructionResponse.observe(this, {
-            toast(it?.message ?: "salam")
+            toast(it?.message ?: "salam") //TODO complete this
         })
 
         viewModel.checkUpdateResponse.observe(this, { event ->
