@@ -46,7 +46,8 @@ import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.MainActivityViewModel
 
 class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
-    PermissionHelper.Interactions, ApiService.InternetConnectionListener, ApiService.OnUnauthorizedListener {
+    PermissionHelper.Interactions, ApiService.InternetConnectionListener,
+    ApiService.OnUnauthorizedListener {
 
     companion object {
         private const val REQ_GO_TO_SETTINGS_PERMISSION = 14
@@ -203,6 +204,32 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         mBinding.recyclerInstruction.layoutManager =
             LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         mBinding.recyclerInstruction.adapter = mAdapter
+
+        mBinding.btnSync.setOnClickListener {
+            viewModel.instructions.value?.forEach {
+                if (!it.isUploaded) {
+                    if (it.canUpload) {
+                        toast("shoru upload shodan")
+                        viewModel.submitInstructionResult(it)
+                    }
+                    else {
+                        when {
+                            it.submitFlowModel == null -> {
+                                toast("hichi sabt nashode")
+                            }
+                            it.submitFlowModel!!.description == null -> {
+                                toast("desc null hast")
+                            }
+                            it.submitFlowModel!!.scannedTagCode == null -> {
+                                toast("scan nashode")
+                            }
+                        }
+                    }
+                } else {
+                    toast("ghalan upload shode") //TODO unaee ke upload shode aslan to list neshun nade
+                }
+            }
+        }
     }
 
     private fun subscribeObservers() {
@@ -219,6 +246,9 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         }
 
 
+        viewModel.submitInstructionResponse.observe(this, {
+            toast(it?.message ?: "salam")
+        })
 
         viewModel.checkUpdateResponse.observe(this, { event ->
             event.getEventIfNotHandled()?.let {

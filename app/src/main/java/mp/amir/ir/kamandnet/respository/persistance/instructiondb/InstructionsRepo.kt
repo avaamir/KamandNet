@@ -76,4 +76,12 @@ object InstructionsRepo {
             job = Job()
         return dao.search("%$keyword%")
     }
+
+    fun uploaded(requestId: Int, isUploaded: Boolean) {
+        if (!::job.isInitialized || !job.isActive)
+            job = Job()
+        CoroutineScope(IO + job).launch {
+            dao.uploaded(requestId, isUploaded)
+        }
+    }
 }

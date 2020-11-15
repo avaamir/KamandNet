@@ -45,7 +45,9 @@ data class Instruction(
     val repairGroupTitle: String,
 
     @Embedded
-    var submitFlowModel: SubmitFlowModel?
+    var submitFlowModel: SubmitFlowModel?,
+
+    var isUploaded: Boolean
 
 ) : Parcelable {
     val name get() = "$jobType $nodeType"
@@ -59,4 +61,5 @@ data class Instruction(
         get() = getEnumById(InstructionState::id, _requestStateId)
 
     val canUpload get() = tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode)
+            && !submitFlowModel?.description.isNullOrEmpty()
 }

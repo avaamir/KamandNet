@@ -33,4 +33,7 @@ interface InstructionDao {
 
     @Query("SELECT * FROM instructions WHERE nodeInstance Like :keyword OR nodeType Like :keyword OR jobType Like :keyword OR repairTypeTitle Like :keyword")
     fun search(keyword: String): LiveData<List<Instruction>>
+
+    @Query("UPDATE instructions SET isUploaded = :uploaded WHERE id = :id")
+    suspend fun uploaded(id: Int, uploaded: Boolean)
 }

@@ -1,14 +1,17 @@
 package mp.amir.ir.kamandnet.viewmodels
 
 import androidx.lifecycle.*
+import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
+import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
 import mp.amir.ir.kamandnet.respository.RemoteRepo
 import mp.amir.ir.kamandnet.respository.UserConfigs
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.utils.general.DoubleTrigger
 import mp.amir.ir.kamandnet.utils.general.Event
+import mp.amir.ir.kamandnet.utils.general.now
 
 class MainActivityViewModel : ViewModel() {
 
@@ -16,6 +19,19 @@ class MainActivityViewModel : ViewModel() {
 
     //TODO read from db
     val messageCount: LiveData<String> = MutableLiveData()
+
+
+    private val submitFlowEvent = MutableLiveData<Instruction>()
+    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) {
+        val flow = it.submitFlowModel!!
+        RemoteRepo.submitInstruction(
+            it.id,
+            flow.description!!,
+            flow.scannedTagCode,
+            flow.doneDate ?: now().toString(), //TODO  age tagCode nadasht che tarikhi bokhore???
+            flow.images
+        )
+    }
 
 
     private var isCheckedForUpdatesRequestActive = false
@@ -77,5 +93,9 @@ class MainActivityViewModel : ViewModel() {
 
     fun logout() {
         TODO("Not yet implemented")
+    }
+
+    fun submitInstructionResult(instruction: Instruction) {
+        submitFlowEvent.value = instruction
     }
 }

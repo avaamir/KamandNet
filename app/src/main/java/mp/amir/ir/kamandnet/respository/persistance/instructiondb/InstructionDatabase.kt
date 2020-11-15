@@ -9,7 +9,7 @@ import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.respository.persistance.typeconverter.FileListTypeConverter
 
 @TypeConverters(FileListTypeConverter::class)
-@Database(entities = [Instruction::class], version = 12, exportSchema = false)
+@Database(entities = [Instruction::class], version = 13, exportSchema = false)
 abstract class InstructionDatabase : RoomDatabase() {
 
     abstract fun getDao(): InstructionDao

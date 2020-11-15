@@ -118,15 +118,15 @@ object RemoteRepo {
     }
 
     fun submitInstruction(
-        id: Int,
+        requestId: Int,
         description: String,
-        tagCode: String,
+        tagCode: String?,
         date: String,
         images: List<File>
     ): RunOnceLiveData<Entity<Any>?> {
-        val idPart = id.toString().toRequestBody("text/plane".toMediaTypeOrNull())
+        val idPart = requestId.toString().toRequestBody("text/plane".toMediaTypeOrNull())
         val descPart = description.toRequestBody("text/plane".toMediaTypeOrNull())
-        val tagPart = tagCode.toRequestBody("text/plane".toMediaTypeOrNull())
+        val tagPart = tagCode?.toRequestBody("text/plane".toMediaTypeOrNull())
         val datePart = date.toRequestBody("text/plane".toMediaTypeOrNull())
         val imagesPart = arrayListOf<MultipartBody.Part>().apply {
             images.forEachIndexed { index, file ->
@@ -149,6 +149,12 @@ object RemoteRepo {
                         datePart,
                         imagesPart
                     )
+                    val body = response.body()
+                    if (body != null) {
+                        if (body.isSucceed) {
+                            InstructionsRepo.uploaded(requestId, true)
+                        }
+                    }
                     withContext(Main) {
                         value = response.body()
                     }

@@ -32,7 +32,7 @@ interface KamandClient {
     suspend fun submitInstructions(
         @Part("id") id: RequestBody,
         @Part("description") description: RequestBody,
-        @Part("tagCode") tagCode: RequestBody,
+        @Part("tagCode") tagCode: RequestBody?,
         @Part("finishDate") doneDate: RequestBody,
         @Part images: List<MultipartBody.Part>?
     ): Response<Entity<Any>>
