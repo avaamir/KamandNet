@@ -34,7 +34,6 @@ import mp.amir.ir.kamandnet.databinding.ActivityMainBinding
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
-import mp.amir.ir.kamandnet.models.enums.TagType
 import mp.amir.ir.kamandnet.respository.UserConfigs
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter

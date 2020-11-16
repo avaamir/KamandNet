@@ -68,10 +68,10 @@ class InstructionsAdapter(private val interaction: Interaction) :
 
             mBinding.ivRepairType.setImageResource(
                 when (item.repairType) {
-                    RepairType.PM -> R.drawable.ic_pm
+                    RepairType.PDM -> R.drawable.ic_pm
                     RepairType.EM -> R.drawable.ic_run
                     RepairType.CM -> R.drawable.ic_cm
-                    RepairType.PDM -> R.drawable.ic_pdm
+                    RepairType.PM -> R.drawable.ic_pdm
                 }.exhaustiveAsExpression()
             )
 

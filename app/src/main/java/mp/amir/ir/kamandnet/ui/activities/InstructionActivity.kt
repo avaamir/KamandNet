@@ -61,10 +61,10 @@ class InstructionActivity : AppCompatActivity() {
         //TODO mishe az bindingAdapter estefade kard chun tuye instructionAdapter ham daghighan hamin code tekrar shode
         mBinding.layoutInstruction.ivRepairType.setImageResource(
             when (instruction.repairType) {
-                RepairType.PM -> R.drawable.ic_pm
+                RepairType.PDM -> R.drawable.ic_pm
                 RepairType.EM -> R.drawable.ic_run
                 RepairType.CM -> R.drawable.ic_cm
-                RepairType.PDM -> R.drawable.ic_pdm
+                RepairType.PM -> R.drawable.ic_pdm
             }.exhaustiveAsExpression()
         )
 
