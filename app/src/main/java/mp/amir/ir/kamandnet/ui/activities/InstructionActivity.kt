@@ -51,6 +51,8 @@ class InstructionActivity : AppCompatActivity() {
 
         initViews()
         subscribeObservers()
+
+        viewModel.foo()
     }
 
 

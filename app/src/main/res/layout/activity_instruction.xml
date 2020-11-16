@@ -242,6 +242,7 @@
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/btnScan"
             app:image="@drawable/ic_save"
+            app:backgroundColor="@color/md_green_500"
             app:isFlat="true"
             app:text="ثبت" />
 

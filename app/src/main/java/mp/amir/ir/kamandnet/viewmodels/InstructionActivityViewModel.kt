@@ -67,6 +67,16 @@ class InstructionActivityViewModel : ViewModel() {
         })
     }
 
+    fun foo() {
+        instructionToSave.sendingState = SendingState.Ready
+        instructionToSave.submitFlowModel = SubmitFlowModel().apply {
+            scannedTagCode = "123"
+            description = "salam"
+        }
+        InstructionsRepo.update(instructionToSave)
+    }
+
+
     fun saveImage(context: Context, bitmap: Bitmap, turn: Int) {
         if (turn > 6 || turn < 1)
             throw Exception("framePic$turn does not exist, faghat 5 ta ax mishe upload kard")
