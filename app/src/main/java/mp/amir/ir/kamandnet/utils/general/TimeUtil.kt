@@ -25,7 +25,7 @@ fun getDateFromTimestamp(timestamp: Long): Date {
     return Date(timestamp * 1000)
 }
 
-fun now(): Long = Calendar.getInstance().time.time
+fun now(): Long = Calendar.getInstance().time.time / 1000
 fun nowDate(): Date = Calendar.getInstance().time
 
 
