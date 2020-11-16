@@ -10,7 +10,7 @@ interface InstructionDao {
     @Query("SELECT * FROM instructions WHERE id=:id")
     fun getItemById(id: Int): LiveData<Instruction>
 
-    @get:Query("SELECT * FROM instructions WHERE isUploaded = 0")
+    @get:Query("SELECT * FROM instructions")
     val allInstruction: LiveData<List<Instruction>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
