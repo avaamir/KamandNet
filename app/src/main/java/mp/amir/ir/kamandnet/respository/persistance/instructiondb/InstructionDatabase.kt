@@ -6,10 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import mp.amir.ir.kamandnet.models.Instruction
+import mp.amir.ir.kamandnet.models.SendingStateConverter
 import mp.amir.ir.kamandnet.respository.persistance.typeconverter.FileListTypeConverter
 
-@TypeConverters(FileListTypeConverter::class)
-@Database(entities = [Instruction::class], version = 13, exportSchema = false)
+@TypeConverters(FileListTypeConverter::class, SendingStateConverter::class)
+@Database(entities = [Instruction::class], version = 14, exportSchema = false)
 abstract class InstructionDatabase : RoomDatabase() {
 
     abstract fun getDao(): InstructionDao

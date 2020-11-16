@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.item_pic_placeholder.view.*
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityInstructionBinding
-import mp.amir.ir.kamandnet.models.api.TagType.*
+import mp.amir.ir.kamandnet.models.enums.TagType.*
 import mp.amir.ir.kamandnet.utils.general.exhaustive
 import mp.amir.ir.kamandnet.utils.general.putParcelableExtra
 import mp.amir.ir.kamandnet.utils.general.toast

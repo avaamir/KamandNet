@@ -1,4 +1,4 @@
-package mp.amir.ir.kamandnet.models.api
+package mp.amir.ir.kamandnet.models.enums
 
 enum class TagType(val id: Int) {
     None(0),

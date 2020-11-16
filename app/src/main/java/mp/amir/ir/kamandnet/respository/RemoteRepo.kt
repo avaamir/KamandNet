@@ -113,7 +113,7 @@ object RemoteRepo {
     fun checkUpdates() = apiReq(ApiService.client::checkUpdates)
 
 
-    fun submitInstruction2(){
+    fun submitInstruction2() {
 
     }
 
@@ -140,7 +140,8 @@ object RemoteRepo {
 
         return object : RunOnceLiveData<Entity<Any>?>() {
             override fun onActiveRunOnce() {
-                if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
+                if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs =
+                    Job()
                 CoroutineScope(IO + serverJobs).launchApi({
                     val response = ApiService.client.submitInstructions(
                         idPart,
@@ -149,12 +150,6 @@ object RemoteRepo {
                         datePart,
                         imagesPart
                     )
-                    val body = response.body()
-                    if (body != null) {
-                        if (body.isSucceed) {
-                            InstructionsRepo.uploaded(requestId, true)
-                        }
-                    }
                     withContext(Main) {
                         value = response.body()
                     }

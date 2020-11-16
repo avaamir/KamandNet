@@ -34,6 +34,7 @@ import mp.amir.ir.kamandnet.databinding.ActivityMainBinding
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
+import mp.amir.ir.kamandnet.models.enums.TagType
 import mp.amir.ir.kamandnet.respository.UserConfigs
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter
@@ -206,29 +207,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         mBinding.recyclerInstruction.adapter = mAdapter
 
         mBinding.btnSync.setOnClickListener {
-            viewModel.instructions.value?.forEach {
-                if (!it.isUploaded) {
-                    if (it.canUpload) {
-                        toast("shoru upload shodan")
-                        viewModel.submitInstructionResult(it)
-                    }
-                    else {
-                        when {
-                            it.submitFlowModel == null -> {
-                                toast("hichi sabt nashode")
-                            }
-                            it.submitFlowModel!!.description == null -> { //TODO empty budan ham check savad
-                                toast("desc null hast")
-                            }
-                            it.submitFlowModel!!.scannedTagCode == null -> {
-                                toast("scan nashode")
-                            }
-                        }
-                    }
-                } else {
-                    toast("ghalan upload shode") //TODO unaee ke upload shode aslan to list neshun nade
-                }
-            }
+            viewModel.sync()
         }
     }
 
@@ -247,7 +226,15 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
 
         viewModel.submitInstructionResponse.observe(this, {
-            toast(it?.message ?: "salam") //TODO complete this
+            if(it != null) {
+                if (it.isSucceed) {
+                    toast(it.message) //TODO complete this
+                } else {
+                    toast(it.message)
+                }
+            } else {
+                toast("خطا در ارسال اطلاعات به سرور. لطفا وضعیت شبکه خود را بررسی کنید")
+            }
         })
 
         viewModel.checkUpdateResponse.observe(this, { event ->

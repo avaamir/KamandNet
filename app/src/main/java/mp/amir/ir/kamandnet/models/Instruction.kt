@@ -1,15 +1,15 @@
 package mp.amir.ir.kamandnet.models
 
 import android.os.Parcelable
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import mp.amir.ir.kamandnet.models.api.InstructionState
-import mp.amir.ir.kamandnet.models.api.RepairType
+import mp.amir.ir.kamandnet.models.enums.InstructionState
+import mp.amir.ir.kamandnet.models.enums.RepairType
 import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
-import mp.amir.ir.kamandnet.models.api.TagType
+import mp.amir.ir.kamandnet.models.enums.SendingState
+import mp.amir.ir.kamandnet.models.enums.TagType
+import mp.amir.ir.kamandnet.respository.persistance.typeconverter.SendingStateConverter
 import mp.amir.ir.kamandnet.utils.general.getEnumById
 
 @Entity(tableName = "instructions")
@@ -47,7 +47,8 @@ data class Instruction(
     @Embedded
     var submitFlowModel: SubmitFlowModel?,
 
-    var isUploaded: Boolean
+    @TypeConverters(SendingStateConverter::class)
+    var sendingState: SendingState
 
 ) : Parcelable {
     val name get() = "$jobType $nodeType"
@@ -59,7 +60,4 @@ data class Instruction(
 
     val state: InstructionState
         get() = getEnumById(InstructionState::id, _requestStateId)
-
-    val canUpload get() = (tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode))
-            && !submitFlowModel?.description.isNullOrEmpty()
 }

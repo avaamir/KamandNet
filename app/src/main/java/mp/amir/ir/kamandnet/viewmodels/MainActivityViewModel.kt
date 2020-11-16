@@ -6,12 +6,12 @@ import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
 import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
+import mp.amir.ir.kamandnet.models.enums.SendingState
+import mp.amir.ir.kamandnet.models.enums.TagType
 import mp.amir.ir.kamandnet.respository.RemoteRepo
 import mp.amir.ir.kamandnet.respository.UserConfigs
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
-import mp.amir.ir.kamandnet.utils.general.DoubleTrigger
-import mp.amir.ir.kamandnet.utils.general.Event
-import mp.amir.ir.kamandnet.utils.general.now
+import mp.amir.ir.kamandnet.utils.general.*
 
 class MainActivityViewModel : ViewModel() {
 
@@ -22,15 +22,24 @@ class MainActivityViewModel : ViewModel() {
 
 
     private val submitFlowEvent = MutableLiveData<Instruction>()
-    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) {
-        val flow = it.submitFlowModel!!
+    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) {_instruction->
+        val flow = _instruction.submitFlowModel!!
         RemoteRepo.submitInstruction(
-            it.id,
+            _instruction.id,
             flow.description!!,
             flow.scannedTagCode,
             flow.doneDate ?: now().toString(), //TODO  age tagCode nadasht che tarikhi bokhore???
             flow.images
-        )
+        ).map { response ->
+            InstructionsRepo.update(_instruction.apply { //todo behtare in Repo.UPDATE ro be repo level bord va yek suspend fun nevesht vasash ke ye coroutine dg ijad nashe
+                if (response?.isSucceed == true) {
+                    _instruction.sendingState = SendingState.Sent
+                } else {
+                    _instruction.sendingState = SendingState.Ready
+                }
+            })
+            response
+        }
     }
 
 
@@ -70,7 +79,9 @@ class MainActivityViewModel : ViewModel() {
             //TODO va done shode budan nabayad neshun dade beshan, in kar bayad dar repo level etefagh biofte
             val keyword = it.first
             if (keyword.isNullOrBlank()) {
-                InstructionsRepo.search(keyword = "%")
+                InstructionsRepo.search(keyword = "%")/*.map { _flowes ->
+                    _flowes.filter { flow -> !flow.isUploaded }
+                }*/
             } else {
                 InstructionsRepo.search(keyword = keyword)
             }
@@ -92,10 +103,32 @@ class MainActivityViewModel : ViewModel() {
     }
 
     fun logout() {
-        TODO("Not yet implemented")
+        UserConfigs.logout()
     }
 
     fun submitInstructionResult(instruction: Instruction) {
         submitFlowEvent.value = instruction
+    }
+
+
+    fun sync() {
+        /*instructions.value!!.forEach { //todo BtnSync faghat bayad zamani neshun dade beshe ke chizi tu list hast (ke Ready bashe(ekhtiari))
+            if (it.sendingState == SendingState.Ready) {
+                it.sendingState = SendingState.Sending
+                submitFlowEvent.value = it
+                InstructionsRepo.update(it)
+            }
+        }*/
+        InstructionsRepo.updateAll(
+            instructions.value!!.mapNotNull {
+                if (it.sendingState == SendingState.Ready) {
+                    it.sendingState = SendingState.Sending
+                    submitFlowEvent.value = it
+                    it
+                } else {
+                    null
+                }
+            }
+        )
     }
 }

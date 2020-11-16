@@ -77,11 +77,19 @@ object InstructionsRepo {
         return dao.search("%$keyword%")
     }
 
-    fun uploaded(requestId: Int, isUploaded: Boolean) {
+    /*fun uploaded(requestId: Int, isUploaded: Boolean) {
         if (!::job.isInitialized || !job.isActive)
             job = Job()
         CoroutineScope(IO + job).launch {
             dao.uploaded(requestId, isUploaded)
+        }
+    }*/
+
+    fun updateAll(items: List<Instruction>) {
+        if (!::job.isInitialized || !job.isActive)
+            job = Job()
+        CoroutineScope(IO + job).launch {
+            dao.updateAll(items)
         }
     }
 }

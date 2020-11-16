@@ -1,10 +1,5 @@
 package mp.amir.ir.kamandnet.respository.apiservice
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
-import androidx.multidex.MultiDexApplication
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main

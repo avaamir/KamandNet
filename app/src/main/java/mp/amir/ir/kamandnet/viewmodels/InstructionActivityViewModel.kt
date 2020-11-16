@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
+import mp.amir.ir.kamandnet.models.enums.SendingState
+import mp.amir.ir.kamandnet.models.enums.TagType
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.utils.general.now
 import java.io.File
@@ -57,8 +59,12 @@ class InstructionActivityViewModel : ViewModel() {
                 instructionToSave.submitFlowModel!!.doneDate = now().toString()
             }
         }
-
-        InstructionsRepo.update(instructionToSave)
+        InstructionsRepo.update(instructionToSave.apply {
+            //TODO condition check shavad , makhsusan bakhsh scannedTagCode
+            val condition = (tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode)) && !submitFlowModel?.description.isNullOrEmpty()
+            if(condition)
+                sendingState = SendingState.Ready
+        })
     }
 
     fun saveImage(context: Context, bitmap: Bitmap, turn: Int) {

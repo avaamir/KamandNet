@@ -37,7 +37,7 @@ interface KamandClient {
         @Part images: List<MultipartBody.Part>?
     ): Response<Entity<Any>>
 
-    @POST("NotImplemented")
+    @POST("ء")
     suspend fun submitInstructions2(
         @Body instructionSubmitBody: RequestBody
     ): Response<Response<Entity<Any>>>

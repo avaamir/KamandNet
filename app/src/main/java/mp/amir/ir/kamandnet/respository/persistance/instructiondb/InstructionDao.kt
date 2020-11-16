@@ -10,7 +10,7 @@ interface InstructionDao {
     @Query("SELECT * FROM instructions WHERE id=:id")
     fun getItemById(id: Int): LiveData<Instruction>
 
-    @get:Query("SELECT * FROM instructions")
+    @get:Query("SELECT * FROM instructions WHERE isUploaded = 0")
     val allInstruction: LiveData<List<Instruction>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -34,6 +34,9 @@ interface InstructionDao {
     @Query("SELECT * FROM instructions WHERE nodeInstance Like :keyword OR nodeType Like :keyword OR jobType Like :keyword OR repairTypeTitle Like :keyword")
     fun search(keyword: String): LiveData<List<Instruction>>
 
-    @Query("UPDATE instructions SET isUploaded = :uploaded WHERE id = :id")
-    suspend fun uploaded(id: Int, uploaded: Boolean)
+   /* @Query("UPDATE instructions SET isUploaded = :uploaded WHERE id = :id")
+    suspend fun uploaded(id: Int, uploaded: Boolean)*/
+
+    @Update
+    fun updateAll(items: List<Instruction>)
 }
