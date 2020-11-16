@@ -202,6 +202,10 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
     }
 
     private fun initViews() {
+        mBinding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getInstructionsFromServer()
+        }
+
         mBinding.recyclerInstruction.layoutManager =
             LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         mBinding.recyclerInstruction.adapter = mAdapter
@@ -226,7 +230,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
 
         viewModel.submitInstructionResponse.observe(this, {
-            if(it != null) {
+            if (it != null) {
                 if (it.isSucceed) {
                     toast(it.message) //TODO complete this
                 } else {
@@ -267,7 +271,10 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
 
         viewModel.getInstructionsFromServerResponse.observe(this, {
-            mBinding.progressBar.visibility = View.GONE
+            if (mBinding.progressBar.visibility != View.GONE)
+                mBinding.progressBar.visibility = View.GONE
+            if (mBinding.swipeRefreshLayout.isRefreshing)
+                mBinding.swipeRefreshLayout.isRefreshing = false
             if (it != null) {
                 if (it.isSucceed) {
                     //TODO test for checking db

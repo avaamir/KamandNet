@@ -12,8 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.item_pic_placeholder.view.*
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityInstructionBinding
+import mp.amir.ir.kamandnet.models.enums.RepairType
 import mp.amir.ir.kamandnet.models.enums.TagType.*
 import mp.amir.ir.kamandnet.utils.general.exhaustive
+import mp.amir.ir.kamandnet.utils.general.exhaustiveAsExpression
 import mp.amir.ir.kamandnet.utils.general.putParcelableExtra
 import mp.amir.ir.kamandnet.utils.general.toast
 import mp.amir.ir.kamandnet.utils.kamand.Constants
@@ -54,7 +56,19 @@ class InstructionActivity : AppCompatActivity() {
 
     private fun initViews() {
 
-        viewModel.instruction!!.submitFlowModel?.let {
+        val instruction = viewModel.instruction!!
+
+        //TODO mishe az bindingAdapter estefade kard chun tuye instructionAdapter ham daghighan hamin code tekrar shode
+        mBinding.layoutInstruction.ivRepairType.setImageResource(
+            when (instruction.repairType) {
+                RepairType.PM -> R.drawable.ic_pm
+                RepairType.EM -> R.drawable.ic_run
+                RepairType.CM -> R.drawable.ic_cm
+                RepairType.PDM -> R.drawable.ic_pdm
+            }.exhaustiveAsExpression()
+        )
+
+        instruction.submitFlowModel?.let {
             it.images.forEach { file ->
                 if (!file.exists()) {
                     throw Exception("file does not exist: ${file.absolutePath}") //TODO mishe age vojud nadsht az to db addresesh ro hazf kard, soal ine ke chera vojud nadashte bashe??
@@ -83,7 +97,7 @@ class InstructionActivity : AppCompatActivity() {
         }
 
 
-        if (viewModel.instruction!!.submitFlowModel?.scannedTagCode != null) {
+        if (instruction.submitFlowModel?.scannedTagCode != null) {
             mBinding.btnScan.visibility = View.GONE
         } else when (viewModel.instruction!!.tagType) {
             None -> mBinding.btnScan.visibility = View.GONE
@@ -92,7 +106,7 @@ class InstructionActivity : AppCompatActivity() {
                     Intent(this, QRScannerActivity::class.java).apply {
                         putParcelableExtra(
                             Constants.INTENT_INSTRUCTION_DATA,
-                            viewModel.instruction!!
+                            instruction
                         )
                     },
                     QR_SCANNER_REQ
@@ -103,7 +117,7 @@ class InstructionActivity : AppCompatActivity() {
                     Intent(this, NfcActivity::class.java).apply {
                         putParcelableExtra(
                             Constants.INTENT_INSTRUCTION_DATA,
-                            viewModel.instruction!!
+                            instruction
                         )
                     },
                     NFC_SCANNER_REQ
