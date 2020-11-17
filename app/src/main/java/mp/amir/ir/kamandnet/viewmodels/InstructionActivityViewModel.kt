@@ -55,6 +55,8 @@ class InstructionActivityViewModel : ViewModel() {
     ) {
         if (description == null && scannedTagCode == null)
             throw Exception("at least one argument should not be null")
+        if (description != null && description.isBlank())
+            throw Exception("empty description is not valid")
         if (instructionToSave.submitFlowModel == null) {
             instructionToSave.submitFlowModel = SubmitFlowModel(
                 description,
@@ -113,16 +115,13 @@ class InstructionActivityViewModel : ViewModel() {
 
     }
 
-    fun submitToServer() {
+    fun submitToServer(description: String) {
         val flow = instructionToSave.submitFlowModel
         if (flow == null) {
             throw IllegalStateException("It is nothing to save to server")
         } else {
-            if (flow.description.isNullOrEmpty()) {
-                throw IllegalStateException("description is needed")
-            } else {
-                submitFlowEvent.value = instructionToSave
-            }
+            flow.description = description
+            submitFlowEvent.value = instructionToSave
         }
     }
 

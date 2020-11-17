@@ -20,7 +20,8 @@ import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.InstructionActivityViewModel
 
-class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionListener, ApiService.OnUnauthorizedListener {
+class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionListener,
+    ApiService.OnUnauthorizedListener {
 
 
     companion object {
@@ -132,8 +133,7 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
         mBinding.btnSave.setOnClickListener {
             val description = mBinding.etDesc.text.toString().trim()
             if (description.isNotEmpty()) {
-                viewModel.submitResult(description = description)
-                viewModel.submitToServer()
+                viewModel.submitToServer(description = description)
                 mBinding.btnSave.showProgressBar(true)
                 finish()
             } else {
@@ -175,7 +175,8 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
                  super.onBackPressed()
              })*/
         val description = mBinding.etDesc.text.toString().trim()
-        viewModel.submitResult(description = description)
+        if (description.isNotEmpty())
+            viewModel.submitResult(description = description)
         super.onBackPressed()
     }
 
@@ -195,7 +196,8 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             }
             QR_SCANNER_REQ, NFC_SCANNER_REQ -> {
                 if (resultCode == RESULT_OK) {
-                    val scannedCode = data?.extras?.get(Constants.INTENT_SCAN_TAG_RESULT_TEXT) as String
+                    val scannedCode =
+                        data?.extras?.get(Constants.INTENT_SCAN_TAG_RESULT_TEXT) as String
                     viewModel.submitResult(scannedTagCode = scannedCode)
                     toast("scannedCode:$scannedCode -> for test purpose")
                     mBinding.btnScan.visibility = View.GONE
@@ -230,7 +232,7 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
 
 
     override fun onUnauthorizedAction(event: Event<Unit>) {
-            finish()
+        finish()
     }
 
     override fun onInternetUnavailable() {

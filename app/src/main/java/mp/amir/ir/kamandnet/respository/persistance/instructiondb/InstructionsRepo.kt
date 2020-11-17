@@ -103,7 +103,10 @@ object InstructionsRepo {
 
         Thread {
             val updateList = ArrayList<Instruction>()
-            dao.getNotSentInstructions()
+            dao.getAllInstructions().also {
+                println("Debux:oldList: $it")
+                println("Debux:newList: $items")
+            }
                 .diffSourceFromNewValues(items, object : EqualityCallback<Instruction> {
                     override fun areItemsSame(oldItem: Instruction, newItem: Instruction) =
                         oldItem.id == newItem.id
@@ -125,6 +128,7 @@ object InstructionsRepo {
 
                 }, object : OnSourceListChange<Instruction> {
                     override fun onAddItems(items: List<Instruction>) {
+                        println("Debux:Inserted: $items")
                         dao.insertAllNonSuspend(items)
                     }
 
@@ -145,13 +149,17 @@ object InstructionsRepo {
                     }
 
                     override fun onRemoveItems(items: List<Instruction>) {
+                        println("Debux:Removed: $items")
                         dao.deleteNonSuspend(items)
                     }
 
                     override fun onFinished(newList: ArrayList<Instruction>) {
+                        println("Debux:Updated: $updateList")
                         dao.updateNonSuspend(updateList)
                     }
-                })
+                }).also {
+                    println("Debux:result: $it")
+                }
         }.run()
     }
 }

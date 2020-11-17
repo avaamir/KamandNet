@@ -54,8 +54,6 @@ fun <T> List<T>.diffSourceFromNewValues(
         }
     }
 
-
-
     sourceList.removeAll(excludeList)
     onSourceListChanged.onRemoveItems(excludeList)
 
@@ -63,28 +61,6 @@ fun <T> List<T>.diffSourceFromNewValues(
     onSourceListChanged.onAddItems(newList)
     return sourceList.also { onSourceListChanged.onFinished(it) }
 }
-
-
-/*
-fun <Key, Value> HashMap<Key, Value>.diffSourceFromNewValues(
-    newValues: Collection<Key>, onSourceListChange: OnSourceMapChange<Key, Value>
-) {
-    val excludeList = ArrayList(this.keys)
-    newValues.forEach { key ->
-        if (excludeList.contains(key)) {
-            excludeList.remove(key)
-        } else {
-            val value = onSourceListChange.onAddItem(key)
-            this[key] = value
-        }
-    }
-    excludeList.forEach { key ->
-        onSourceListChange.onRemoveItem(key)
-        this.remove(key)
-    }
-}
-*/
-
 
 interface OnSourceMapChange<K, V, T> { //T is for new values list
     fun onAddItem(key: K, item: T): V
