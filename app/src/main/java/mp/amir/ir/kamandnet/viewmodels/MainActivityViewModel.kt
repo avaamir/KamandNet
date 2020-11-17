@@ -78,19 +78,16 @@ class MainActivityViewModel : ViewModel() {
         Transformations.switchMap(DoubleTrigger(filterKey, InstructionsRepo.allInstructions)) {
             val keyword = it.first
             if (keyword.isNullOrBlank()) {
-                InstructionsRepo.search(keyword = "%")/*.map { _flowes ->
-                    _flowes.filter { flow -> !flow.isUploaded }
-                }*/
+                InstructionsRepo.search(keyword = "%")
             } else {
                 InstructionsRepo.search(keyword = keyword)
             }.map { _instructions ->
                 _instructions.sortedWith(compareBy { item ->
                     item.repairType == RepairType.EM
                 })
-                //TODO uncomment below lines to not show 'sent' items
-                /*.filter { _instr ->
+                .filter { _instr ->
                     _instr.sendingState != SendingState.Sent
-                }*/
+                }
             }
         }
 
