@@ -2,12 +2,14 @@ package mp.amir.ir.kamandnet.respository.persistance.instructiondb
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.recyclerview.widget.DiffUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import mp.amir.ir.kamandnet.models.Instruction
+import mp.amir.ir.kamandnet.utils.general.EqualityCallback
+import mp.amir.ir.kamandnet.utils.general.OnSourceListChange
+import mp.amir.ir.kamandnet.utils.general.diffSourceFromNewValues
 
 
 object InstructionsRepo {
@@ -94,32 +96,62 @@ object InstructionsRepo {
         }
     }
 
+
     fun insertOrUpdate(items: List<Instruction>) {
         if (!::job.isInitialized || !job.isActive)
             job = Job()
+
         CoroutineScope(IO + job).launch {
-            val sourceList = dao.getAllInstructions()
-            val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-                override fun getOldListSize(): Int = sourceList.size
+            dao.getAllInstructions()
+                .diffSourceFromNewValues(items, object : EqualityCallback<Instruction> {
+                    override fun areItemsSame(oldItem: Instruction, newItem: Instruction) =
+                        oldItem.id == newItem.id
 
-                override fun getNewListSize(): Int = items.size
+                    override fun areContentsSame(
+                        oldItem: Instruction,
+                        newItem: Instruction
+                    ): Boolean {
+                        return oldItem.repairGroupTitle == newItem.repairGroupTitle &&
+                                oldItem._repairTypeId == newItem._repairTypeId &&
+                                oldItem._tagTypeId == newItem._tagTypeId &&
+                                oldItem.tagCode == newItem.tagCode &&
+                                oldItem._requestStateId == newItem._requestStateId &&
+                                oldItem.jobType == newItem.jobType &&
+                                oldItem.date == newItem.date &&
+                                oldItem.nodeInstance == newItem.nodeInstance &&
+                                oldItem.nodeType == newItem.nodeType
+                    }
 
-                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                   return items[newItemPosition].id == sourceList[oldItemPosition].id
-                }
+                }, object : OnSourceListChange<Instruction> {
+                    override fun onAddItems(item: List<Instruction>) {
+                        CoroutineScope(IO).launch {
+                            dao.insertAll(items)
+                        }
+                    }
 
-                override fun areContentsTheSame(
-                    oldItemPosition: Int,
-                    newItemPosition: Int
-                ): Boolean {
-                    //TODO just check createdDateTime
-                    return items[newItemPosition] == sourceList[oldItemPosition]
-                }
-            })
+                    override fun onUpdateItem(oldItem: Instruction, newItem: Instruction) {
+                        CoroutineScope(IO).launch {
+                            val itemToSave = oldItem.copy(
+                                _repairTypeId = newItem._repairTypeId,
+                                repairGroupTitle = newItem.repairGroupTitle,
+                                _tagTypeId = newItem._tagTypeId,
+                                tagCode = newItem.tagCode,
+                                _requestStateId = newItem._requestStateId,
+                                stateTitle = newItem.stateTitle,
+                                jobType = newItem.jobType,
+                                date = newItem.date,
+                                nodeInstance = newItem.nodeInstance,
+                                nodeType = newItem.nodeType
+                            )
+                            dao.update(itemToSave)
+                        }
+                    }
 
-            result.
+                    override fun onRemoveItem(item: Instruction) {
 
+                    }
+
+                })
         }
-
     }
 }

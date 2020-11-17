@@ -28,7 +28,7 @@ interface InstructionDao {
     @Query("SELECT * FROM instructions WHERE id = :id")
     suspend fun exists(id: Int): Instruction?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     suspend fun insertAll(items: List<Instruction>)
 
     @Query("SELECT * FROM instructions WHERE nodeInstance Like :keyword OR nodeType Like :keyword OR jobType Like :keyword OR repairTypeTitle Like :keyword")
@@ -40,5 +40,6 @@ interface InstructionDao {
     @Update
     suspend fun updateAll(items: List<Instruction>)
 
+    @Query("SELECT * FROM instructions WHERE sendingState != 3") //SendingState.Done
     suspend fun getAllInstructions(): List<Instruction>
 }

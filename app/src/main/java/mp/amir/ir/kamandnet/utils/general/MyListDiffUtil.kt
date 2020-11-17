@@ -29,6 +29,42 @@ fun <K, V, T> HashMap<K, V>.diffSourceFromNewValues(
     }
 }
 
+
+interface EqualityCallback<T> {
+    fun areItemsSame(oldItem: T, newItem: T): Boolean
+    fun areContentsSame(oldItem: T, newItem: T): Boolean
+}
+
+
+fun <T> List<T>.diffSourceFromNewValues(
+    newItems: List<T>,
+    equalityCallback: EqualityCallback<T>,
+    onSourceListChanged: OnSourceListChange<T>
+) : ArrayList<T> {
+    val newList = ArrayList(newItems)
+    val sourceList = ArrayList(this)
+    sourceList.forEachIndexed { index, oldItem ->
+        for (i in newList.indices) {
+            if (equalityCallback.areItemsSame(oldItem, newList[i])) { //items are same
+                val newItem = newList.removeAt(i)
+                if (!equalityCallback.areContentsSame(oldItem, newItem)) {
+                    onSourceListChanged.onUpdateItem(oldItem, newItem)
+                }
+                break
+            } else {
+                if (i == newList.size - 1) {
+                    sourceList.removeAt(index)
+                    onSourceListChanged.onRemoveItem(oldItem)
+                }
+            }
+        }
+    }
+    sourceList.addAll(newList)
+    onSourceListChanged.onAddItems(newItems)
+    return sourceList
+}
+
+
 /*
 fun <Key, Value> HashMap<Key, Value>.diffSourceFromNewValues(
     newValues: Collection<Key>, onSourceListChange: OnSourceMapChange<Key, Value>
@@ -49,31 +85,11 @@ fun <Key, Value> HashMap<Key, Value>.diffSourceFromNewValues(
 }
 */
 
-
-/*
-fun <T> ArrayList<T>.diffSourceFromNewValues(
-    newValues: Collection<T>, onSourceListChange: OnSourceListChange<T>
-) {
-    val excludeList = ArrayList(this)
-    newValues.forEach {
-        if (excludeList.contains(it)) {
-            excludeList.remove(it)
-        } else {
-            this.add(it)
-            onSourceListChange.onAddItem(it)
-        }
-    }
-    excludeList.forEach {
-        onSourceListChange.onRemoveItem(it)
-        this.remove(it)
-    }
-}
-
 interface OnSourceListChange<T> {
-    fun onAddItem(item: T)
+    fun onAddItems(item: List<T>)
+    fun onUpdateItem(oldItem: T, newItem: T)
     fun onRemoveItem(item: T)
 }
-*/
 
 interface OnSourceMapChange<K, V, T> { //T is for new values list
     fun onAddItem(key: K, item: T): V
