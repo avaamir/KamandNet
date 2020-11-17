@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import mp.amir.ir.kamandnet.models.Instruction
+import mp.amir.ir.kamandnet.models.enums.InstructionState
 import mp.amir.ir.kamandnet.utils.general.EqualityCallback
 import mp.amir.ir.kamandnet.utils.general.OnSourceListChange
 import mp.amir.ir.kamandnet.utils.general.diffSourceFromNewValues
@@ -150,7 +151,10 @@ object InstructionsRepo {
 
                     override fun onRemoveItems(items: List<Instruction>) {
                         println("Debux:Removed: $items")
-                        dao.deleteNonSuspend(items)
+                        val nonDoneItems = items.filter {
+                            it.state != InstructionState.Done
+                        }
+                        dao.deleteNonSuspend(nonDoneItems) //unaee ke done shodan ro vase history taraf mikham, age done shode bud pakesh nemekinma az repo
                     }
 
                     override fun onFinished(newList: ArrayList<Instruction>) {
