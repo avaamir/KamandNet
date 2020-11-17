@@ -5,13 +5,13 @@ import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
-import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
 import mp.amir.ir.kamandnet.models.enums.SendingState
-import mp.amir.ir.kamandnet.models.enums.TagType
 import mp.amir.ir.kamandnet.respository.RemoteRepo
 import mp.amir.ir.kamandnet.respository.UserConfigs
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
-import mp.amir.ir.kamandnet.utils.general.*
+import mp.amir.ir.kamandnet.utils.general.DoubleTrigger
+import mp.amir.ir.kamandnet.utils.general.Event
+import mp.amir.ir.kamandnet.utils.general.now
 
 class MainActivityViewModel : ViewModel() {
 

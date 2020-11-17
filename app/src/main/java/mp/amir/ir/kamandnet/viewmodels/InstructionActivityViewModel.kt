@@ -3,17 +3,21 @@ package mp.amir.ir.kamandnet.viewmodels
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
 import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.models.enums.TagType
+import mp.amir.ir.kamandnet.respository.RemoteRepo
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.utils.general.now
 import java.io.File
 import java.io.FileOutputStream
 
 class InstructionActivityViewModel : ViewModel() {
+
 
     var instruction: Instruction? = null
         set(value) {
@@ -23,19 +27,27 @@ class InstructionActivityViewModel : ViewModel() {
 
     private lateinit var instructionToSave: Instruction
 
-    private val submitFlowEvent = MutableLiveData<SubmitFlowModel>()
-    /*val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) {
-        RemoteRepo.submitInstruction(it.id, it.description, it.tagCode, it.date, it.images)
-    }*/
+    private val submitFlowEvent = MutableLiveData<Instruction>()
+    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) { _instruction ->
+        val flow = _instruction.submitFlowModel!!
+        RemoteRepo.submitInstruction(
+            _instruction.id,
+            flow.description!!,
+            flow.scannedTagCode,
+            flow.doneDate ?: now().toString(), //TODO  age tagCode nadasht che tarikhi bokhore???
+            flow.images
+        ).map { response ->
+            InstructionsRepo.update(_instruction.apply { //todo behtare in Repo.UPDATE ro be repo level bord va yek suspend fun nevesht vasash ke ye coroutine dg ijad nashe
+                if (response?.isSucceed == true) {
+                    _instruction.sendingState = SendingState.Sent
+                } else {
+                    _instruction.sendingState = SendingState.Ready
+                }
+            })
+            response
+        }
+    }
 
-    //TODO jaye bahs darad, aya ba dokme sync kar konad ya ba save ham dar server upload shavad???
-    /*fun submitToServer() {
-        if (instructionToSave.canUpload) {
-            if (instructionToSave.submitFlowModel?.description != null)
-                submitFlowEvent.value = instructionToSave.submitFlowModel
-        } else
-            throw Exception("scanned tag code and instruction tagCode are not equal")
-    }*/
 
     fun submitResult(
         description: String? = null,
@@ -61,24 +73,16 @@ class InstructionActivityViewModel : ViewModel() {
         }
         InstructionsRepo.update(instructionToSave.apply {
             //TODO condition check shavad , makhsusan bakhsh scannedTagCode
-            val condition = (tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode)) && !submitFlowModel?.description.isNullOrEmpty()
-            if(condition)
+            val condition =
+                (tagType == TagType.None || (submitFlowModel?.scannedTagCode == tagCode)) && !submitFlowModel?.description.isNullOrEmpty()
+            if (condition)
                 sendingState = SendingState.Ready
         })
     }
 
-    fun foo() {
-        instructionToSave.sendingState = SendingState.Ready
-        instructionToSave.submitFlowModel = SubmitFlowModel().apply {
-            scannedTagCode = "123"
-            description = "salam"
-        }
-        InstructionsRepo.update(instructionToSave)
-    }
-
 
     fun saveImage(context: Context, bitmap: Bitmap, turn: Int) {
-        if (turn > 6 || turn < 1)
+        if (turn > 5 || turn < 1)
             throw Exception("framePic$turn does not exist, faghat 5 ta ax mishe upload kard")
         val images = instructionToSave.submitFlowModel?.images
         if (images != null && images.size >= turn) {
@@ -109,7 +113,23 @@ class InstructionActivityViewModel : ViewModel() {
 
     }
 
+    fun submitToServer() {
+        val flow = instructionToSave.submitFlowModel
+        if (flow == null) {
+            throw IllegalStateException("It is nothing to save to server")
+        } else {
+            if (flow.description.isNullOrEmpty()) {
+                throw IllegalStateException("description is needed")
+            } else {
+                submitFlowEvent.value = instructionToSave
+            }
+        }
+    }
+
 
 }
+
+
+
 
 

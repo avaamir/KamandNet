@@ -14,14 +14,13 @@ import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityInstructionBinding
 import mp.amir.ir.kamandnet.models.enums.RepairType
 import mp.amir.ir.kamandnet.models.enums.TagType.*
-import mp.amir.ir.kamandnet.utils.general.exhaustive
-import mp.amir.ir.kamandnet.utils.general.exhaustiveAsExpression
-import mp.amir.ir.kamandnet.utils.general.putParcelableExtra
-import mp.amir.ir.kamandnet.utils.general.toast
+import mp.amir.ir.kamandnet.respository.apiservice.ApiService
+import mp.amir.ir.kamandnet.ui.dialogs.NoNetworkDialog
+import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.InstructionActivityViewModel
 
-class InstructionActivity : AppCompatActivity() {
+class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionListener, ApiService.OnUnauthorizedListener {
 
 
     companion object {
@@ -51,8 +50,6 @@ class InstructionActivity : AppCompatActivity() {
 
         initViews()
         subscribeObservers()
-
-        viewModel.foo()
     }
 
 
@@ -101,8 +98,12 @@ class InstructionActivity : AppCompatActivity() {
 
         if (instruction.submitFlowModel?.scannedTagCode != null) {
             mBinding.btnScan.visibility = View.GONE
-        } else when (viewModel.instruction!!.tagType) {
-            None -> mBinding.btnScan.visibility = View.GONE
+            mBinding.btnSave.visibility = View.VISIBLE
+        } else when (instruction.tagType) {
+            None -> {
+                mBinding.btnSave.visibility = View.VISIBLE
+                mBinding.btnScan.visibility = View.GONE
+            }
             QR -> mBinding.btnScan.setOnClickListener {
                 startActivityForResult(
                     Intent(this, QRScannerActivity::class.java).apply {
@@ -130,24 +131,29 @@ class InstructionActivity : AppCompatActivity() {
 
         mBinding.btnSave.setOnClickListener {
             val description = mBinding.etDesc.text.toString().trim()
-            viewModel.submitResult(description = description)
-            finish()
+            if (description.isNotEmpty()) {
+                viewModel.submitResult(description = description)
+                viewModel.submitToServer()
+                mBinding.btnSave.showProgressBar(true)
+                finish()
+            } else {
+                toast("حداقل وارد کردن متن توضیحات الزامی میباشد")
+            }
         }
     }
 
     private fun subscribeObservers() {
-        /*viewModel.submitInstructionResponse.observe(this, {
-            mBinding.btnSave.showProgressBar(false)
+        viewModel.submitInstructionResponse.observe(this, {
             if (it != null) {
                 if (it.isSucceed) {
-                    //TODO should update LocalRepo and delete this flow from LOCAL DB then finish activity
+                    toast(it.message)
                 } else {
-                    //TODO
+                    toast(it.message)
                 }
             } else {
-
+                toast("خطا در ارسال اطلاعات به سرور. لطفا وضعیت شبکه خود را بررسی کنید")
             }
-        })*/
+        })
     }
 
     override fun onBackPressed() {
@@ -178,27 +184,20 @@ class InstructionActivity : AppCompatActivity() {
                 if (resultCode == RESULT_OK) {
                     val bitmap = data?.extras?.get("data") as Bitmap?
                     if (bitmap != null) {
-                        onChoseImage(bitmap)
                         viewModel.saveImage(this, bitmap, turn)
+                        onChoseImage(bitmap)
                     } else {
                         toast("خطایی به وجود آمد")
                     }
                 }
             }
-            QR_SCANNER_REQ -> {
+            QR_SCANNER_REQ, NFC_SCANNER_REQ -> {
                 if (resultCode == RESULT_OK) {
-                    val qrCode = data?.extras?.get(Constants.INTENT_SCAN_TAG_RESULT_TEXT) as String
-                    viewModel.submitResult(scannedTagCode = qrCode)
+                    val scannedCode = data?.extras?.get(Constants.INTENT_SCAN_TAG_RESULT_TEXT) as String
+                    viewModel.submitResult(scannedTagCode = scannedCode)
+                    toast("scannedCode:$scannedCode -> for test purpose")
                     mBinding.btnScan.visibility = View.GONE
-                }
-            }
-            NFC_SCANNER_REQ -> {
-                if (resultCode == RESULT_OK) {
-                    val nfcCode = data?.extras?.get(Constants.INTENT_SCAN_TAG_RESULT_TEXT) as String
-                    //TODO check the qr code with server code
-                    viewModel.submitResult(scannedTagCode = nfcCode)
-                    toast(nfcCode)
-                    mBinding.btnScan.visibility = View.GONE
+                    mBinding.btnSave.visibility = View.VISIBLE
                 }
             }
         }
@@ -228,4 +227,11 @@ class InstructionActivity : AppCompatActivity() {
     }
 
 
+    override fun onUnauthorizedAction(event: Event<Unit>) {
+            finish()
+    }
+
+    override fun onInternetUnavailable() {
+        NoNetworkDialog(this, R.style.my_alert_dialog).show()
+    }
 }

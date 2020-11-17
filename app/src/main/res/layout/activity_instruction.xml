@@ -235,26 +235,25 @@
 
         <mp.amir.ir.kamandnet.ui.customs.customs.general.MyRaisedButton
             android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/btnScan"
             app:image="@drawable/ic_save"
             app:backgroundColor="@color/md_green_500"
             app:isFlat="true"
-            app:text="ثبت" />
+            app:text=" ثبت نهایی"
+            android:visibility="invisible"/>
 
         <mp.amir.ir.kamandnet.ui.customs.customs.general.MyRaisedButton
             android:id="@+id/btnScan"
-            android:layout_width="120dp"
+            android:layout_width="match_parent"
 
             android:layout_height="50dp"
             app:image="@drawable/ic_qr_code_scanner"
             app:isFlat="true"
             android:layout_alignParentBottom="true"
-            app:text="اسکن" />
+            app:text="اسکن"
+            android:visibility="visible" />
 
     </RelativeLayout>
 

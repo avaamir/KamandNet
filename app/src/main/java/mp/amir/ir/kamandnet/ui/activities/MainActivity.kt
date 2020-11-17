@@ -218,12 +218,9 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
         subscribeNetworkStateChangeListener {
             if (it) {
-                //TODO vaghti net nadare ama dastura load shodan faghat bala ye alamat biad ke yaani net nadari va save shodan flow ha to server bere tu halat pending
                 if (permissionHelper.arePermissionsGranted()) {
                     viewModel.checkUpdates()
                 }
-            } else {
-                //TODO
             }
         }
 
@@ -231,7 +228,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         viewModel.submitInstructionResponse.observe(this, {
             if (it != null) {
                 if (it.isSucceed) {
-                    toast(it.message) //TODO complete this
+                    toast(it.message)
                 } else {
                     toast(it.message)
                 }
