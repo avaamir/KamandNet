@@ -82,12 +82,12 @@ class MainActivityViewModel : ViewModel() {
             } else {
                 InstructionsRepo.search(keyword = keyword)
             }.map { _instructions ->
-                _instructions.sortedWith(compareBy { item ->
+                _instructions.filter { _instr ->
+                    _instr.sendingState != SendingState.Sent
+                }.sortedWith(compareBy { item ->
                     item.repairType == RepairType.EM
                 })
-                .filter { _instr ->
-                    _instr.sendingState != SendingState.Sent
-                }
+
             }
         }
 
