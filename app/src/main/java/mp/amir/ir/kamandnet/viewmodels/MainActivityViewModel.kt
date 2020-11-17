@@ -5,6 +5,7 @@ import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
+import mp.amir.ir.kamandnet.models.enums.RepairType
 import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.respository.RemoteRepo
 import mp.amir.ir.kamandnet.respository.UserConfigs
@@ -22,7 +23,7 @@ class MainActivityViewModel : ViewModel() {
 
 
     private val submitFlowEvent = MutableLiveData<Instruction>()
-    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) {_instruction->
+    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) { _instruction ->
         val flow = _instruction.submitFlowModel!!
         RemoteRepo.submitInstruction(
             _instruction.id,
@@ -75,8 +76,6 @@ class MainActivityViewModel : ViewModel() {
 
     val instructions =
         Transformations.switchMap(DoubleTrigger(filterKey, InstructionsRepo.allInstructions)) {
-            //TODO faghat un dastur karaee ro neshun bede ke done nashodan, age response az server umad
-            //TODO va done shode budan nabayad neshun dade beshan, in kar bayad dar repo level etefagh biofte
             val keyword = it.first
             if (keyword.isNullOrBlank()) {
                 InstructionsRepo.search(keyword = "%")/*.map { _flowes ->
@@ -84,6 +83,14 @@ class MainActivityViewModel : ViewModel() {
                 }*/
             } else {
                 InstructionsRepo.search(keyword = keyword)
+            }.map { _instructions ->
+                _instructions.sortedWith(compareBy { item ->
+                    item.repairType == RepairType.EM
+                })
+                //TODO uncomment below lines to not show 'sent' items
+                /*.filter { _instr ->
+                    _instr.sendingState != SendingState.Sent
+                }*/
             }
         }
 

@@ -38,5 +38,7 @@ interface InstructionDao {
     suspend fun uploaded(id: Int, uploaded: Boolean)*/
 
     @Update
-    fun updateAll(items: List<Instruction>)
+    suspend fun updateAll(items: List<Instruction>)
+
+    suspend fun getAllInstructions(): List<Instruction>
 }

@@ -106,16 +106,11 @@ object RemoteRepo {
     fun getInstructions() = apiReq(ApiService.client::getInstructions) {
         val response = it.body()
         if (response?.isSucceed == true) {
-            InstructionsRepo.insert(response.entity!!)
+            InstructionsRepo.insertOrUpdate(response.entity!!)
         }
     }
 
     fun checkUpdates() = apiReq(ApiService.client::checkUpdates)
-
-
-    fun submitInstruction2() {
-
-    }
 
     fun submitInstruction(
         requestId: Int,
