@@ -101,8 +101,9 @@ object InstructionsRepo {
         if (!::job.isInitialized || !job.isActive)
             job = Job()
 
-        CoroutineScope(IO + job).launch {
-            dao.getAllInstructions()
+        Thread {
+            val updateList = ArrayList<Instruction>()
+            dao.getNotSentInstructions()
                 .diffSourceFromNewValues(items, object : EqualityCallback<Instruction> {
                     override fun areItemsSame(oldItem: Instruction, newItem: Instruction) =
                         oldItem.id == newItem.id
@@ -123,35 +124,34 @@ object InstructionsRepo {
                     }
 
                 }, object : OnSourceListChange<Instruction> {
-                    override fun onAddItems(item: List<Instruction>) {
-                        CoroutineScope(IO).launch {
-                            dao.insertAll(items)
-                        }
+                    override fun onAddItems(items: List<Instruction>) {
+                        dao.insertAllNonSuspend(items)
                     }
 
                     override fun onUpdateItem(oldItem: Instruction, newItem: Instruction) {
-                        CoroutineScope(IO).launch {
-                            val itemToSave = oldItem.copy(
-                                _repairTypeId = newItem._repairTypeId,
-                                repairGroupTitle = newItem.repairGroupTitle,
-                                _tagTypeId = newItem._tagTypeId,
-                                tagCode = newItem.tagCode,
-                                _requestStateId = newItem._requestStateId,
-                                stateTitle = newItem.stateTitle,
-                                jobType = newItem.jobType,
-                                date = newItem.date,
-                                nodeInstance = newItem.nodeInstance,
-                                nodeType = newItem.nodeType
-                            )
-                            dao.update(itemToSave)
-                        }
+                        val itemToSave = oldItem.copy(
+                            _repairTypeId = newItem._repairTypeId,
+                            repairGroupTitle = newItem.repairGroupTitle,
+                            _tagTypeId = newItem._tagTypeId,
+                            tagCode = newItem.tagCode,
+                            _requestStateId = newItem._requestStateId,
+                            stateTitle = newItem.stateTitle,
+                            jobType = newItem.jobType,
+                            date = newItem.date,
+                            nodeInstance = newItem.nodeInstance,
+                            nodeType = newItem.nodeType
+                        )
+                        updateList.add(itemToSave)
                     }
 
-                    override fun onRemoveItem(item: Instruction) {
-
+                    override fun onRemoveItems(items: List<Instruction>) {
+                        dao.deleteNonSuspend(items)
                     }
 
+                    override fun onFinished(newList: ArrayList<Instruction>) {
+                        dao.updateNonSuspend(updateList)
+                    }
                 })
-        }
+        }.run()
     }
 }

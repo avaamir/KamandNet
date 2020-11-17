@@ -29,21 +29,16 @@ fun <K, V, T> HashMap<K, V>.diffSourceFromNewValues(
     }
 }
 
-
-interface EqualityCallback<T> {
-    fun areItemsSame(oldItem: T, newItem: T): Boolean
-    fun areContentsSame(oldItem: T, newItem: T): Boolean
-}
-
-
 fun <T> List<T>.diffSourceFromNewValues(
     newItems: List<T>,
     equalityCallback: EqualityCallback<T>,
     onSourceListChanged: OnSourceListChange<T>
-) : ArrayList<T> {
+): ArrayList<T> {
     val newList = ArrayList(newItems)
     val sourceList = ArrayList(this)
-    sourceList.forEachIndexed { index, oldItem ->
+    val excludeList = ArrayList<T>()
+    for (index in sourceList.indices) {
+        val oldItem = sourceList[index]
         for (i in newList.indices) {
             if (equalityCallback.areItemsSame(oldItem, newList[i])) { //items are same
                 val newItem = newList.removeAt(i)
@@ -53,15 +48,20 @@ fun <T> List<T>.diffSourceFromNewValues(
                 break
             } else {
                 if (i == newList.size - 1) {
-                    sourceList.removeAt(index)
-                    onSourceListChanged.onRemoveItem(oldItem)
+                    excludeList.add(oldItem)
                 }
             }
         }
     }
+
+
+
+    sourceList.removeAll(excludeList)
+    onSourceListChanged.onRemoveItems(excludeList)
+
     sourceList.addAll(newList)
-    onSourceListChanged.onAddItems(newItems)
-    return sourceList
+    onSourceListChanged.onAddItems(newList)
+    return sourceList.also { onSourceListChanged.onFinished(it) }
 }
 
 
@@ -85,11 +85,6 @@ fun <Key, Value> HashMap<Key, Value>.diffSourceFromNewValues(
 }
 */
 
-interface OnSourceListChange<T> {
-    fun onAddItems(item: List<T>)
-    fun onUpdateItem(oldItem: T, newItem: T)
-    fun onRemoveItem(item: T)
-}
 
 interface OnSourceMapChange<K, V, T> { //T is for new values list
     fun onAddItem(key: K, item: T): V
@@ -100,4 +95,16 @@ interface OnSourceMapChange<K, V, T> { //T is for new values list
     ) //Check equality if needed, if newValue are different then update the source item
 
     fun onRemoveItem(keyId: K)
+}
+
+interface OnSourceListChange<T> {
+    fun onAddItems(items: List<T>)
+    fun onUpdateItem(oldItem: T, newItem: T)
+    fun onRemoveItems(items: List<T>)
+    fun onFinished(newList: ArrayList<T>)
+}
+
+interface EqualityCallback<T> {
+    fun areItemsSame(oldItem: T, newItem: T): Boolean
+    fun areContentsSame(oldItem: T, newItem: T): Boolean
 }

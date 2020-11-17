@@ -19,6 +19,12 @@ interface InstructionDao {
     @Update
     suspend fun update(item: Instruction)
 
+    @Update
+    fun updateNonSuspend(item: List<Instruction>)
+
+    @Delete
+    fun deleteNonSuspend(item: List<Instruction>)
+
     @Delete
     suspend fun delete(item: Instruction)
 
@@ -28,8 +34,11 @@ interface InstructionDao {
     @Query("SELECT * FROM instructions WHERE id = :id")
     suspend fun exists(id: Int): Instruction?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<Instruction>)
+
+    @Insert
+    fun insertAllNonSuspend(items: List<Instruction>)
 
     @Query("SELECT * FROM instructions WHERE nodeInstance Like :keyword OR nodeType Like :keyword OR jobType Like :keyword OR repairTypeTitle Like :keyword")
     fun search(keyword: String): LiveData<List<Instruction>>
@@ -38,8 +47,8 @@ interface InstructionDao {
     suspend fun uploaded(id: Int, uploaded: Boolean)*/
 
     @Update
-    suspend fun updateAll(items: List<Instruction>)
+    fun updateAll(items: List<Instruction>)
 
     @Query("SELECT * FROM instructions WHERE sendingState != 3") //SendingState.Done
-    suspend fun getAllInstructions(): List<Instruction>
+    fun getNotSentInstructions(): List<Instruction>
 }
