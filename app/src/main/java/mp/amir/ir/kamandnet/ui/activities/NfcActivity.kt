@@ -68,7 +68,7 @@ class NfcActivity : AppCompatActivity() {
                 )
                 finish()
             } else {
-                toast("این تگ مربوطه به این دستورکار نمیباشد")
+                toast("این تگ مربوطه به این دستور کار نمیباشد")
             }
         } else {
             toast("no NDEF records found!")

@@ -56,7 +56,7 @@ class QRScannerActivity : AppCompatActivity() {
                         )
                         finish()
                     } else {
-                        toast("این تگ مربوطه به این دستورکار نمیباشد")
+                        toast("این تگ مربوطه به این دستور کار نمیباشد")
                     }
                 }
             }

@@ -144,9 +144,11 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
 
     private fun subscribeObservers() {
         viewModel.submitInstructionResponse.observe(this, {
+            mBinding.btnSave.showProgressBar(false)
             if (it != null) {
                 if (it.isSucceed) {
                     toast(it.message)
+                    finish()
                 } else {
                     toast(it.message)
                 }
