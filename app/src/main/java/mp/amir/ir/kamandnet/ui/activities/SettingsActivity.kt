@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivitySettingsBinding
+import mp.amir.ir.kamandnet.respository.apiservice.ApiService
+import mp.amir.ir.kamandnet.respository.apiservice.interceptors.NetworkConnectionInterceptor
 import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 import mp.amir.ir.kamandnet.utils.general.toast
 import mp.amir.ir.kamandnet.utils.kamand.Constants
@@ -48,6 +50,10 @@ class SettingsActivity : AppCompatActivity() {
                 domain += "/"
             }
             PrefManager.saveDomain(domain)
+            ApiService.init(
+                domain,
+                application as NetworkConnectionInterceptor.INetworkAvailability
+            )
             if (domainNotInitialized) {
                 startActivity(Intent(this, LoginActivity::class.java))
             }
