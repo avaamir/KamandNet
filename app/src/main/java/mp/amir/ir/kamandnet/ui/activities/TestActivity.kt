@@ -19,6 +19,7 @@ class TestActivity : AppCompatActivity() {
 
     private fun initViews() {
         btnChangeDomain.setOnClickListener {
+            
         }
         btnReqApi.setOnClickListener {
             CoroutineScope(IO).launch {

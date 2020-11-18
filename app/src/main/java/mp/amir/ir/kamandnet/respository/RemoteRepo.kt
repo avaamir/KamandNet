@@ -77,7 +77,7 @@ object RemoteRepo {
             val userEntity = it.body()
             if (userEntity?.isSucceed == true) {
                 val user = userEntity.entity!!
-                UserConfigs.loginUser(user)
+                UserConfigs.loginUser(user, true)
             }
         }
 

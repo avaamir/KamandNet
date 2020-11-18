@@ -18,8 +18,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object ApiService {
-    const val Domain = "http://microland.ir:87/api/"
-    private const val BASE_API_URL = Domain
+    lateinit var domain: String
+        private set
+    private val BASE_API_URL get() = domain + "api/"
 
     private var event = Event(Unit)
     private var onUnauthorizedListener: OnUnauthorizedListener? = null
@@ -29,13 +30,13 @@ object ApiService {
 
     private lateinit var iNetworkAvailabilityImpl: NetworkConnectionInterceptor.INetworkAvailability
 
-    val client: KamandClient by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-        retrofitBuilder.build().create(KamandClient::class.java)
-    }
+    var mClient: KamandClient? = null
+    val client: KamandClient
+        get() =
+            mClient ?: makeRetrofit(BASE_API_URL).create(KamandClient::class.java)
+                .also { mClient = it }
 
-
-    private val retrofitBuilder: Retrofit.Builder by lazy {
-
+    private fun makeRetrofit(baseURL: String): Retrofit {
         val client: OkHttpClient = OkHttpClient.Builder()
             //UnsafeOkHttpClient.getUnsafeOkHttpClientBuilder()
             .apply {
@@ -78,10 +79,11 @@ object ApiService {
             }.build()
 
         val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()
-        Retrofit.Builder()
-            .baseUrl(BASE_API_URL)
+        return Retrofit.Builder()
+            .baseUrl(baseURL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
+            .build()
     }
 
     @Synchronized
@@ -112,8 +114,20 @@ object ApiService {
         }
     }
 
-    fun init(iNetworkAvailability: NetworkConnectionInterceptor.INetworkAvailability) {
+    @Synchronized
+    fun init(
+        domain: String,
+        iNetworkAvailability: NetworkConnectionInterceptor.INetworkAvailability
+    ) {
+        this.domain = domain
+        mClient = null
         this.iNetworkAvailabilityImpl = iNetworkAvailability
+    }
+
+    @Synchronized
+    fun changeDomain(domain: String) {
+        this.domain = domain
+        mClient = null
     }
 
     interface OnUnauthorizedListener {

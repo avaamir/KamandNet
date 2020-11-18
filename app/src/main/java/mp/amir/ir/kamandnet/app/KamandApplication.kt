@@ -1,11 +1,7 @@
 package mp.amir.ir.kamandnet.app
 
 import android.app.Activity
-import android.app.Application
 import android.graphics.Typeface
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.os.Bundle
 import androidx.core.content.res.ResourcesCompat
 import androidx.multidex.MultiDexApplication
@@ -42,7 +38,13 @@ class KamandApplication : MultiDexApplication(), NetworkConnectionInterceptor.IN
         super.onCreate()
         PrefManager.init(applicationContext)
         InstructionsRepo.init(applicationContext)
-        ApiService.init(this)
+
+        PrefManager.baseURL?.let {
+            ApiService.init(
+                domain = it,
+                iNetworkAvailability = this
+            )
+        }
 
         registerActivityLifecycleCallbacks(object: ActivityLifecycleCallbacks {
             override fun onActivityCreated(p0: Activity, p1: Bundle?) {

@@ -23,9 +23,9 @@ object UserConfigs {
         }
     }
 
-    fun loginUser(user: User) {
+    fun loginUser(user: User, blocking: Boolean) {
         if (UserConfigs.user.value != user) {
-            PrefManager.saveUser(user)
+            PrefManager.saveUser(user, blocking)
             afterLoggedInDo(user)
         }
     }

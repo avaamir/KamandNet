@@ -3,6 +3,7 @@ package mp.amir.ir.kamandnet.utils.kamand
 import org.osmdroid.util.GeoPoint
 
 object Constants {
+    const val INTENT_SETTINGS_DOMAIN_NOT_INIT = "SETTI-DO-N-INI"
     const val INTENT_SCAN_TAG_RESULT_TEXT = "qr-nfc-result"
     const val INTENT_UPDATE_ACTIVITY_UPDATE_RESPONSE = "update-ac"
     const val INTENT_INSTRUCTION_DATA = "inst-act-data"

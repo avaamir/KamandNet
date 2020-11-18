@@ -17,7 +17,7 @@ fun loadProfilePic(mProfileImage: ImageView, picUrl: String?) {
         .placeholder(R.drawable.ic_profile_placeholder2)
     Glide.with(mProfileImage.context)
         .setDefaultRequestOptions(requestOptions)
-        .load(if (picUrl != null) ApiService.Domain + picUrl else "") //.transition(new DrawableTransitionOptions().crossFade()) //transition baraye circleImageView nemishe
+        .load(if (picUrl != null) ApiService.domain + picUrl else "") //.transition(new DrawableTransitionOptions().crossFade()) //transition baraye circleImageView nemishe
         .into(mProfileImage)
 }
 
@@ -30,7 +30,7 @@ fun loadPic(iv: ImageView, picUrl: String?) {
     Glide.with(iv.context)
         .setDefaultRequestOptions(requestOptions)
         .load(
-            ApiService.Domain + (picUrl ?: "")
+            ApiService.domain + (picUrl ?: "")
         ) //.transition(new DrawableTransitionOptions().crossFade()) //transition baraye circleImageView nemishe
         .into(iv)
 }

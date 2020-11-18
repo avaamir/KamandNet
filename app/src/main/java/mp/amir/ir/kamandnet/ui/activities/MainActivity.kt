@@ -36,6 +36,7 @@ import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.respository.UserConfigs
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
+import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter
 import mp.amir.ir.kamandnet.ui.customs.animations.closeReveal
 import mp.amir.ir.kamandnet.ui.customs.animations.startReveal
@@ -91,6 +92,17 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
             .withTextColor(ContextCompat.getColor(this, R.color.gray900))
             .withOnDrawerItemClickListener { _, _, _ ->
                 toast("not yet implemeted")
+                true
+            }
+    }
+    private val drawerSettings by lazy {
+        PrimaryDrawerItem()
+            .withName("تنظیمات")
+            .withIcon(R.drawable.ic_settings)
+            .withTypeface(iransansLight)
+            .withTextColor(ContextCompat.getColor(this, R.color.gray900))
+            .withOnDrawerItemClickListener { _, _, _ ->
+                startActivity(Intent(this, SettingsActivity::class.java))
                 true
             }
     }
@@ -156,8 +168,16 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         super.onCreate(savedInstanceState)
 
 
-        if (true) {
+        if (false) {
             startActivity(Intent(this, TestActivity::class.java))
+            finish()
+            return
+        }
+
+        if(PrefManager.baseURL == null) {
+            startActivity(Intent(this, SettingsActivity::class.java).apply {
+                putExtra(Constants.INTENT_SETTINGS_DOMAIN_NOT_INIT, true)
+            })
             finish()
             return
         }
@@ -407,6 +427,8 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
             drawerShowProfile,
             DividerDrawerItem(),
             drawerMessages,
+            DividerDrawerItem(),
+            drawerSettings,
             DividerDrawerItem(),
             drawerAboutUs,
             drawerLogout
