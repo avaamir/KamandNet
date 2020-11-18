@@ -39,13 +39,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:supportsRtl">
+        <activity android:name=".ui.activities.TestActivity"></activity>
         <activity android:name=".ui.activities.NfcActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.activities.QRScannerActivity" />
         <activity android:name=".ui.activities.AboutUsActivity" />
         <activity android:name=".ui.activities.MessageActivity" />

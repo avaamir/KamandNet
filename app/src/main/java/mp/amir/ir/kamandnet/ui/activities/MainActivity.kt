@@ -155,6 +155,13 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+        if (true) {
+            startActivity(Intent(this, TestActivity::class.java))
+            finish()
+            return
+        }
+
         if (!UserConfigs.isLoggedIn) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
