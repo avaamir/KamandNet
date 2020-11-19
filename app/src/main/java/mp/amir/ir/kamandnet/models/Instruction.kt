@@ -31,6 +31,10 @@ data class Instruction(
     @SerializedName("equipmentTitle")
     val nodeInstance: String,
 
+    @SerializedName("logDescription")
+    val description: String?,
+
+
     @SerializedName("requsetStateId")
     val _requestStateId: Int, //1:Started, 2:Done, 3:Confirmed, 4:BarghastKhorde, 5:Cancelled, 6:Tamdid_Dore
     @SerializedName("tagCode")

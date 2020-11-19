@@ -10,7 +10,7 @@ import mp.amir.ir.kamandnet.respository.persistance.typeconverter.FileListTypeCo
 import mp.amir.ir.kamandnet.respository.persistance.typeconverter.SendingStateConverter
 
 @TypeConverters(FileListTypeConverter::class, SendingStateConverter::class)
-@Database(entities = [Instruction::class], version = 15, exportSchema = false)
+@Database(entities = [Instruction::class], version = 16, exportSchema = false)
 abstract class InstructionDatabase : RoomDatabase() {
 
     abstract fun getDao(): InstructionDao
