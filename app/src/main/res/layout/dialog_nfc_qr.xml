@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        app:btn_image="@drawable/ic_lock"
+        app:btn_image="@drawable/ic_qr_code_scanner"
         app:layout_constraintBottom_toBottomOf="@+id/btnQR"
         app:layout_constraintEnd_toStartOf="@+id/btnQR"
         app:layout_constraintHorizontal_bias="0.5"
@@ -30,7 +30,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnNFC"
         app:layout_constraintTop_toTopOf="parent"
-        app:btn_image="@drawable/ic_lock"
+        app:btn_image="@drawable/ic_qr_code_scanner"
         app:caption="اسکن کد QR"/>
 
 

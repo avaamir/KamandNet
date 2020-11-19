@@ -25,7 +25,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="8dp"
-            app:srcCompat="@drawable/ic_bug"
+            app:srcCompat="@drawable/ic_settings"
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp" />
 

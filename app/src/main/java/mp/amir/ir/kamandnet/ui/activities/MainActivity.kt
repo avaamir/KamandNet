@@ -40,7 +40,7 @@ import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter
 import mp.amir.ir.kamandnet.ui.customs.animations.closeReveal
 import mp.amir.ir.kamandnet.ui.customs.animations.startReveal
-import mp.amir.ir.kamandnet.ui.customs.dialogs.LocationPermissionDialog
+import mp.amir.ir.kamandnet.ui.customs.dialogs.PermissionDialog
 import mp.amir.ir.kamandnet.ui.dialogs.NoNetworkDialog
 import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.kamand.Constants
@@ -451,7 +451,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         notGrantedPermissions.forEach {
             println("debug: $it not granted, request permissions now") //can show a dialog then request
         }
-        LocationPermissionDialog(this, R.style.my_alert_dialog) { isGranted, dialog ->
+        PermissionDialog(this, R.style.my_alert_dialog) { isGranted, dialog ->
             if (isGranted) {
                 permissionRequesterFunction.invoke()
                 dialog.dismiss()
