@@ -31,10 +31,6 @@ data class Instruction(
     @SerializedName("equipmentTitle")
     val nodeInstance: String,
 
-    @SerializedName("logDescription")
-    val description: String?,
-
-
     @SerializedName("requsetStateId")
     val _requestStateId: Int, //1:Started, 2:Done, 3:Confirmed, 4:BarghastKhorde, 5:Cancelled, 6:Tamdid_Dore
     @SerializedName("tagCode")
@@ -52,9 +48,11 @@ data class Instruction(
     var submitFlowModel: SubmitFlowModel?,
 
     @TypeConverters(SendingStateConverter::class)
-    var sendingState: SendingState
+    var sendingState: SendingState,
 
-) : Parcelable {
+    @SerializedName("logDescription")
+    val description: String? = null,
+    ) : Parcelable {
     val name get() = "$jobType $nodeType"
 
     val repairType get() = getEnumById(RepairType::id, _repairTypeId)

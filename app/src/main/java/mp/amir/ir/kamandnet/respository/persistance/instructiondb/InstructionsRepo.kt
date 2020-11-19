@@ -158,8 +158,10 @@ object InstructionsRepo {
                     }
 
                     override fun onFinished(newList: ArrayList<Instruction>) {
-                        println("Debux:Updated: $updateList")
-                        dao.updateNonSuspend(updateList)
+                        if (updateList.isNotEmpty()) {
+                            println("Debux:Updated: $updateList")
+                            dao.updateNonSuspend(updateList)
+                        }
                     }
                 }).also {
                     println("Debux:result: $it")
