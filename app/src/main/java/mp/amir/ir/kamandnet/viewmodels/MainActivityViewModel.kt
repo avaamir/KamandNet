@@ -125,7 +125,7 @@ class MainActivityViewModel : ViewModel() {
         }*/
         InstructionsRepo.updateAll(
             instructions.value!!.mapNotNull {
-                if (it.sendingState == SendingState.Ready) {
+                if (it.sendingState == SendingState.Ready || it.sendingState == SendingState.Sending) {
                     it.sendingState = SendingState.Sending
                     submitFlowEvent.value = it
                     it

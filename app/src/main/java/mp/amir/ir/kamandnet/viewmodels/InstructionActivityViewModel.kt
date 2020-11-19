@@ -117,11 +117,11 @@ class InstructionActivityViewModel : ViewModel() {
     }
 
     fun submitToServer(description: String) {
-        val flow = instructionToSave.submitFlowModel
-            ?: SubmitFlowModel().also { instructionToSave.submitFlowModel = it }
         if (description.isEmpty()) {
             throw IllegalStateException("description is empty")
         } else {
+            val flow = instructionToSave.submitFlowModel
+                ?: SubmitFlowModel().also { instructionToSave.submitFlowModel = it }
             flow.description = description
             submitFlowEvent.value = instructionToSave
         }

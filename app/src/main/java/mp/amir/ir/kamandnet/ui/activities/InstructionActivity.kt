@@ -15,7 +15,6 @@ import mp.amir.ir.kamandnet.databinding.ActivityInstructionBinding
 import mp.amir.ir.kamandnet.models.enums.RepairType
 import mp.amir.ir.kamandnet.models.enums.TagType.*
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
-import mp.amir.ir.kamandnet.ui.customs.animations.crossfade
 import mp.amir.ir.kamandnet.ui.dialogs.NoNetworkDialog
 import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.kamand.Constants
@@ -144,7 +143,6 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             if (description.isNotEmpty()) {
                 viewModel.submitToServer(description = description)
                 mBinding.btnSave.showProgressBar(true)
-                finish()
             } else {
                 toast("حداقل وارد کردن متن توضیحات الزامی میباشد")
             }
@@ -209,7 +207,8 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
                         data?.extras?.get(Constants.INTENT_SCAN_TAG_RESULT_TEXT) as String
                     viewModel.submitResult(scannedTagCode = scannedCode)
                     toast("scannedCode:$scannedCode -> for test purpose")
-                    crossfade(mBinding.btnSave, mBinding.btnScan)
+                    mBinding.btnScan.visibility = View.GONE
+                    mBinding.btnSave.visibility = View.VISIBLE
                 }
             }
         }

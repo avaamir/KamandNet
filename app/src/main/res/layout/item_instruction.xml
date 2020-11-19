@@ -185,6 +185,22 @@
                 app:layout_constraintTop_toTopOf="@+id/textView8"
                 tools:text="12:20 99/08/07" />
 
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="2dp"
+                android:fontFamily="@font/consolas"
+                android:text="@{data.id}"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/ivRepairType"
+                app:layout_constraintEnd_toStartOf="@+id/tvName"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/ivRepairType"
+                app:layout_constraintTop_toTopOf="@+id/ivRepairType"
+                tools:text="1231245215215" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

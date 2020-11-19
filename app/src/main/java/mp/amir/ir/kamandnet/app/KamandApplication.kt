@@ -16,17 +16,20 @@ class KamandApplication : MultiDexApplication(), NetworkConnectionInterceptor.IN
 
     //Typefaces
     val iransans: Typeface by lazy {
-        ResourcesCompat.getFont(this,
+        ResourcesCompat.getFont(
+            this,
             R.font.iransans
         )!!
     }
     val iransansMedium: Typeface by lazy {
-        ResourcesCompat.getFont(this,
+        ResourcesCompat.getFont(
+            this,
             R.font.iransans_medium
         )!!
     }
     val iransansLight: Typeface by lazy {
-        ResourcesCompat.getFont(this,
+        ResourcesCompat.getFont(
+            this,
             R.font.iransans_light
         )!!
     }
@@ -39,14 +42,9 @@ class KamandApplication : MultiDexApplication(), NetworkConnectionInterceptor.IN
         PrefManager.init(applicationContext)
         InstructionsRepo.init(applicationContext)
 
-        PrefManager.domain?.let {
-            ApiService.init(
-                domain = it,
-                iNetworkAvailability = this
-            )
-        }
+        ApiService.init(domain = PrefManager.domain ?: "", iNetworkAvailability = this)
 
-        registerActivityLifecycleCallbacks(object: ActivityLifecycleCallbacks {
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(p0: Activity, p1: Bundle?) {
             }
 
