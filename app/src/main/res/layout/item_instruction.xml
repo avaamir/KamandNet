@@ -192,7 +192,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginBottom="2dp"
                 android:fontFamily="@font/consolas"
-                android:text="@{data.id}"
+                android:text="@{data.id + ``}"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/ivRepairType"
                 app:layout_constraintEnd_toStartOf="@+id/tvName"
