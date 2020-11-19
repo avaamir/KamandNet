@@ -8,8 +8,11 @@ import mp.amir.ir.kamandnet.models.api.Entity
 import mp.amir.ir.kamandnet.models.api.LoginRequest
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
+import mp.amir.ir.kamandnet.utils.fakeInstructions
+import mp.amir.ir.kamandnet.utils.fakeInstructions2
 import mp.amir.ir.kamandnet.utils.general.RunOnceLiveData
 import mp.amir.ir.kamandnet.utils.general.launchApi
+import mp.amir.ir.kamandnet.utils.makeInstruction
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -103,10 +106,27 @@ object RemoteRepo {
         UserConfigs.logout()
     }
 
-    fun getInstructions() = apiReq(ApiService.client::getInstructions) {
+    fun getInstructions2() = apiReq(ApiService.client::getInstructions) {
         val response = it.body()
         if (response?.isSucceed == true) {
             InstructionsRepo.insertOrUpdate(response.entity!!)
+        }
+    }
+
+    //Fake for test purpose
+    fun getInstructions() : RunOnceLiveData<Entity<List<Instruction>>?> {
+        return object : RunOnceLiveData<Entity<List<Instruction>>?>() {
+            override fun onActiveRunOnce() {
+                CoroutineScope(IO).launch {
+                    delay(2000)
+                    val data = listOf<Instruction>()
+                    InstructionsRepo.insertOrUpdate(data)
+                    withContext(Main) {
+                        value = Entity(data, true, "")
+                    }
+                }
+            }
+
         }
     }
 

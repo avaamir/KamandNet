@@ -37,28 +37,36 @@ fun <T> List<T>.diffSourceFromNewValues(
     val newList = ArrayList(newItems)
     val sourceList = ArrayList(this)
     val excludeList = ArrayList<T>()
-    for (index in sourceList.indices) {
-        val oldItem = sourceList[index]
-        for (i in newList.indices) {
-            if (equalityCallback.areItemsSame(oldItem, newList[i])) { //items are same
-                val newItem = newList.removeAt(i)
-                if (!equalityCallback.areContentsSame(oldItem, newItem)) {
-                    onSourceListChanged.onUpdateItem(oldItem, newItem)
-                }
-                break
-            } else {
-                if (i == newList.size - 1) {
-                    excludeList.add(oldItem)
+
+    if (newList.isNotEmpty()) {
+        for (index in sourceList.indices) {
+            val oldItem = sourceList[index]
+            for (i in newList.indices) {
+                if (equalityCallback.areItemsSame(oldItem, newList[i])) { //items are same
+                    val newItem = newList.removeAt(i)
+                    if (!equalityCallback.areContentsSame(oldItem, newItem)) {
+                        onSourceListChanged.onUpdateItem(oldItem, newItem)
+                    }
+                    break
+                } else {
+                    if (i == newList.size - 1) {
+                        excludeList.add(oldItem)
+                    }
                 }
             }
         }
+        if (excludeList.isNotEmpty()) {
+            sourceList.removeAll(excludeList)
+            onSourceListChanged.onRemoveItems(excludeList)
+        }
+        if (newList.isNotEmpty()) {
+            sourceList.addAll(newList)
+            onSourceListChanged.onAddItems(newList)
+        }
+    } else {
+        onSourceListChanged.onRemoveItems(sourceList)
+        sourceList.clear()
     }
-
-    sourceList.removeAll(excludeList)
-    onSourceListChanged.onRemoveItems(excludeList)
-
-    sourceList.addAll(newList)
-    onSourceListChanged.onAddItems(newList)
     return sourceList.also { onSourceListChanged.onFinished(it) }
 }
 

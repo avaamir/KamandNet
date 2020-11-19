@@ -5,6 +5,7 @@ import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.UpdateResponse
 import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.models.api.Entity
+import mp.amir.ir.kamandnet.models.enums.InstructionState
 import mp.amir.ir.kamandnet.models.enums.RepairType
 import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.respository.RemoteRepo
@@ -83,11 +84,11 @@ class MainActivityViewModel : ViewModel() {
                 InstructionsRepo.search(keyword = keyword)
             }.map { _instructions ->
                 _instructions.filter { _instr ->
-                    _instr.sendingState != SendingState.Sent
-                }.sortedWith(compareBy { item ->
+                    //_instr.sendingState != SendingState.Sent ||
+                            _instr.state == InstructionState.Started //TODO che state haee ro neshun bedam?
+                }.sortedWith(compareByDescending { item ->
                     item.repairType == RepairType.EM
                 })
-
             }
         }
 
