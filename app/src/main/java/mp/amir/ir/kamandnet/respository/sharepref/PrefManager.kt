@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import mp.amir.ir.kamandnet.models.User
+import mp.amir.ir.kamandnet.respository.apiservice.ApiService
+import mp.amir.ir.kamandnet.respository.apiservice.interceptors.NetworkConnectionInterceptor
 
 object PrefManager {
     private const val MY_PREFS_NAME = "prefs"
@@ -17,7 +19,7 @@ object PrefManager {
     val isUserLoggedIn get() = prefs.getString(USER_TAG, null) != null
 
 
-    val baseURL: String? get() = prefs.getString(BASE_URL_TAG, null)
+    val domain: String? get() = prefs.getString(BASE_URL_TAG, null)
 
     fun init(context: Context) {
         if (!this::prefs.isInitialized) {
@@ -55,6 +57,7 @@ object PrefManager {
 
     fun saveDomain(domain: String) {
         prefs.edit().putString(BASE_URL_TAG, domain).apply()
+        ApiService.changeDomain(domain)
     }
 
 }

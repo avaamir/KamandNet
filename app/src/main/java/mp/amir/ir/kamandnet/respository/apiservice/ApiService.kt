@@ -124,6 +124,14 @@ object ApiService {
         this.iNetworkAvailabilityImpl = iNetworkAvailability
     }
 
+    @Synchronized
+    fun changeDomain(
+        domain: String,
+    ) {
+        this.domain = domain
+        mClient = null
+    }
+
     interface OnUnauthorizedListener {
         fun onUnauthorizedAction(event: Event<Unit>)
     }

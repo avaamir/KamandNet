@@ -6,9 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivitySettingsBinding
-import mp.amir.ir.kamandnet.respository.apiservice.ApiService
-import mp.amir.ir.kamandnet.respository.apiservice.interceptors.NetworkConnectionInterceptor
 import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
+import mp.amir.ir.kamandnet.utils.general.alert
 import mp.amir.ir.kamandnet.utils.general.toast
 import mp.amir.ir.kamandnet.utils.kamand.Constants
 
@@ -29,8 +28,12 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        PrefManager.baseURL?.let { mBinding.etDomain.setText(it) }
+        PrefManager.domain?.let { mBinding.etDomain.setText(it) }
 
+
+        mBinding.ivBack.setOnClickListener {
+            onBackPressed()
+        }
 
         mBinding.ivClearDomain.setOnClickListener {
             mBinding.etDomain.text.clear()
@@ -40,7 +43,7 @@ class SettingsActivity : AppCompatActivity() {
         mBinding.btnSave.setOnClickListener {
             var domain = mBinding.etDomain.text.toString().trim()
             if (domain.isEmpty()) {
-                toast("وارد کردن دامنه الزامی میباشد")
+                toast(getString(R.string.error_domain_not_set))
                 return@setOnClickListener
             }
 
@@ -53,14 +56,39 @@ class SettingsActivity : AppCompatActivity() {
                 domain += "/"
             }
             PrefManager.saveDomain(domain)
-            ApiService.init(
-                domain,
-                application as NetworkConnectionInterceptor.INetworkAvailability
-            )
             if (domainNotInitialized) {
                 startActivity(Intent(this, LoginActivity::class.java))
             }
             finish()
         }
     }
+
+    override fun onBackPressed() {
+        val domain = mBinding.etDomain.text.toString().trim()
+        if (domain != PrefManager.domain) {
+            alert(
+                "توجه",
+                "تغییرات ذخیره شود؟",
+                "بله",
+                "خیر",
+                true,
+                {
+                    if (domainNotInitialized) {
+                        toast(getString(R.string.error_domain_not_set))
+                        finish()
+                    } else
+                        super.onBackPressed()
+                },
+            ) {
+                PrefManager.saveDomain(domain)
+                if (domainNotInitialized) {
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                } else
+                    super.onBackPressed()
+            }
+        } else
+            super.onBackPressed()
+    }
+
 }

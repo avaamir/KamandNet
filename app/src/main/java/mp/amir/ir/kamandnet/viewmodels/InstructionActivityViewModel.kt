@@ -15,6 +15,7 @@ import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRe
 import mp.amir.ir.kamandnet.utils.general.now
 import java.io.File
 import java.io.FileOutputStream
+import java.util.ArrayList
 
 class InstructionActivityViewModel : ViewModel() {
 
@@ -124,6 +125,11 @@ class InstructionActivityViewModel : ViewModel() {
             flow.description = description
             submitFlowEvent.value = instructionToSave
         }
+    }
+
+    fun submitImages(images: ArrayList<File>) { //for instuctions have deleted images should save paths again
+        instructionToSave.submitFlowModel!!.images = images
+        InstructionsRepo.update(instructionToSave)
     }
 
 

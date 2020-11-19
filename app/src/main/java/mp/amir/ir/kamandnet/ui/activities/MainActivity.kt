@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
             return
         }
 
-        if(PrefManager.baseURL == null) {
+        if(PrefManager.domain == null) {
             startActivity(Intent(this, SettingsActivity::class.java).apply {
                 putExtra(Constants.INTENT_SETTINGS_DOMAIN_NOT_INIT, true)
             })

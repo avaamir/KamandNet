@@ -39,7 +39,7 @@ class KamandApplication : MultiDexApplication(), NetworkConnectionInterceptor.IN
         PrefManager.init(applicationContext)
         InstructionsRepo.init(applicationContext)
 
-        PrefManager.baseURL?.let {
+        PrefManager.domain?.let {
             ApiService.init(
                 domain = it,
                 iNetworkAvailability = this

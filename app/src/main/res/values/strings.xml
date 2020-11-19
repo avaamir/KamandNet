@@ -96,4 +96,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="search_hint">نام دستور کار را جست و جو کنید</string>
+    <string name="error_domain_not_set">وارد کردن دامنه الزامی میباشد</string>
 </resources>

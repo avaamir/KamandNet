@@ -14,5 +14,5 @@ data class SubmitFlowModel(
     var scannedTagCode: String? = null,
     var doneDate: String? = null,
     @TypeConverters(FileListTypeConverter::class)
-    val images: ArrayList<File> = arrayListOf()
+    var images: ArrayList<File> = arrayListOf()
 ) : Parcelable

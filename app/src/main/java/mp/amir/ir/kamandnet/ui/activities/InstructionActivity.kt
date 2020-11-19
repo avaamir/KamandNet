@@ -20,6 +20,7 @@ import mp.amir.ir.kamandnet.ui.dialogs.NoNetworkDialog
 import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.InstructionActivityViewModel
+import java.io.File
 
 class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionListener,
     ApiService.OnUnauthorizedListener {
@@ -70,14 +71,21 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
         )
 
         instruction.submitFlowModel?.let {
+            val deletedFileList = arrayListOf<File>()
             it.images.forEach { file ->
                 if (!file.exists()) {
-                    throw Exception("file does not exist: ${file.absolutePath}") //TODO mishe age vojud nadsht az to db addresesh ro hazf kard, soal ine ke chera vojud nadashte bashe??
+                    deletedFileList.add(file)
+                } else {
+                    val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    if (turn > 5)
+                        throw Exception("turn is more than 5")
+                    onChoseImage(bitmap)
                 }
-                val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-                if (turn > 5)
-                    throw Exception("turn is more than 5")
-                onChoseImage(bitmap)
+            }
+            if (deletedFileList.isNotEmpty()) {
+                toast("بعضی از عکس ها پاک شده است")
+                it.images.removeAll(deletedFileList)
+                viewModel.submitImages(it.images)
             }
         }
 
