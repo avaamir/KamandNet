@@ -63,7 +63,7 @@
                             android:layout_toLeftOf="@+id/ivBack"
                             android:fontFamily="@font/iransans"
                             android:gravity="center_vertical"
-                            android:text="دستور العمل"
+                            android:text="@{`دستور العمل ` + instruction.id}"
                             android:textColor="@color/white" />
 
                     </RelativeLayout>

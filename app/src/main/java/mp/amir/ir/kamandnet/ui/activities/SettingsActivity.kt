@@ -29,6 +29,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        PrefManager.baseURL?.let { mBinding.etDomain.setText(it) }
+
+
         mBinding.ivClearDomain.setOnClickListener {
             mBinding.etDomain.text.clear()
         }
