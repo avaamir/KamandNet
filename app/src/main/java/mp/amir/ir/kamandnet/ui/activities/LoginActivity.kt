@@ -2,6 +2,7 @@ package mp.amir.ir.kamandnet.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,10 @@ class LoginActivity : AppCompatActivity(), ApiService.InternetConnectionListener
     }
 
     private fun initViews() {
+        mBinding.frameSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
         mBinding.btnLogin.setOnClickListener {
             val username = mBinding.etUsername.text.trim().toString()
             val password = mBinding.etPassword.text.trim().toString()

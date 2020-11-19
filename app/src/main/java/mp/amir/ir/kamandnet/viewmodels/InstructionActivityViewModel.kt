@@ -117,8 +117,9 @@ class InstructionActivityViewModel : ViewModel() {
 
     fun submitToServer(description: String) {
         val flow = instructionToSave.submitFlowModel
-        if (flow == null) {
-            throw IllegalStateException("It is nothing to save to server")
+            ?: SubmitFlowModel().also { instructionToSave.submitFlowModel = it }
+        if (description.isEmpty()) {
+            throw IllegalStateException("description is empty")
         } else {
             flow.description = description
             submitFlowEvent.value = instructionToSave
