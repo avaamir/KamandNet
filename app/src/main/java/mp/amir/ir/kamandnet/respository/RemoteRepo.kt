@@ -119,7 +119,7 @@ object RemoteRepo {
             override fun onActiveRunOnce() {
                 CoroutineScope(IO).launch {
                     delay(2000)
-                    val data = listOf<Instruction>()
+                    val data = fakeInstructions() //listOf<Instruction>()
                     InstructionsRepo.insertOrUpdate(data)
                     withContext(Main) {
                         value = Entity(data, true, "")

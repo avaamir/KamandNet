@@ -97,4 +97,5 @@
     </string>
     <string name="search_hint">نام دستور کار را جست و جو کنید</string>
     <string name="error_domain_not_set">وارد کردن دامنه الزامی میباشد</string>
+    <string name="msg_not_impl">این قسمت هنوز پیاده سازی نشده است</string>
 </resources>

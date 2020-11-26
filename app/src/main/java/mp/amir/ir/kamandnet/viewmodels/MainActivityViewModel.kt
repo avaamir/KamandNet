@@ -84,8 +84,8 @@ class MainActivityViewModel : ViewModel() {
                 InstructionsRepo.search(keyword = keyword)
             }.map { _instructions ->
                 _instructions.filter { _instr ->
-                    //_instr.sendingState != SendingState.Sent ||
-                            _instr.state == InstructionState.Started //TODO che state haee ro neshun bedam?
+                    _instr.sendingState != SendingState.Sent
+                            || _instr.state == InstructionState.Started //TODO che state haee ro neshun bedam?
                 }.sortedWith(compareByDescending { item ->
                     item.repairType == RepairType.EM
                 })

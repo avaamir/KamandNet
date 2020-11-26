@@ -172,6 +172,37 @@
             android:src="@drawable/ic_sync"
             />
 
+
+        <LinearLayout
+            android:id="@+id/frameAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="150dp"
+            android:layout_marginBottom="150dp">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animationView"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:visibility="visible"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/empty_list" />
+
+            <TextView
+                style="@style/my_gray_medium_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="شما دستور کاری ندارید"
+                android:textSize="18sp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

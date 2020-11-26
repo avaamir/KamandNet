@@ -26,7 +26,6 @@ import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
-import kotlinx.android.synthetic.main.activity_main.*
 import mp.amir.ir.kamandnet.BuildConfig
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.app.KamandApplication
@@ -115,8 +114,10 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
             .withTypeface(iransansLight)
             .withTextColor(ContextCompat.getColor(this, R.color.gray900))
             .withOnDrawerItemClickListener { _, _, _ ->
-                val intent = Intent(this@MainActivity, MessageActivity::class.java)
-                startActivity(intent)
+                toast(getString(R.string.msg_not_impl))
+                closeDrawer()
+                /*val intent = Intent(this@MainActivity, MessageActivity::class.java)
+                startActivity(intent)*/
                 true
             }
     }
@@ -174,7 +175,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
             return
         }
 
-        if(PrefManager.domain == null) {
+        if (PrefManager.domain == null) {
             startActivity(Intent(this, SettingsActivity::class.java).apply {
                 putExtra(Constants.INTENT_SETTINGS_DOMAIN_NOT_INIT, true)
             })
@@ -203,6 +204,10 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
     override fun onResume() {
         super.onResume()
+        closeDrawer()
+    }
+
+    private fun closeDrawer() {
         if (::mDrawer.isInitialized) {
             if (mDrawer.isDrawerOpen) {
                 mDrawer.closeDrawer()
@@ -211,7 +216,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         }
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed() {  
         when {
             ::mDrawer.isInitialized && mDrawer.isDrawerOpen -> {
                 mDrawer.closeDrawer()
@@ -237,7 +242,16 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         mBinding.recyclerInstruction.adapter = mAdapter
 
         mBinding.btnSync.setOnClickListener {
-            viewModel.sync()
+            alert(
+                "توجه",
+                "آیا از ثبت نهایی تمامی دستورکارهای انجام شده اطمینان دارید؟",
+                "ارسال",
+                "خیر",
+                false,
+                null,
+            ) {
+                viewModel.sync()
+            }
         }
     }
 
@@ -303,7 +317,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
                     //TODO test for checking db
                     //mAdapter.submitList(it.entity)
                     if (it.entity!!.isEmpty()) {
-                        toast("شما دستور کار دیگری ندارید")
+                        toast("شما دستور کار جدیدی ندارید")
                     }
                 } else {
                     toast(it.message)
@@ -318,41 +332,51 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         viewModel.instructions.observe(this, {
             if (mBinding.progressBar.visibility != View.GONE)
                 mBinding.progressBar.visibility = View.GONE
+            if (it.isEmpty()) {
+                closeReveal(mBinding.frameSearch) {
+                    mBinding.btnSync.visibility = View.GONE
+                }
+                mBinding.frameAnimation.visibility = View.VISIBLE
+            } else {
+                mBinding.btnSync.visibility = View.VISIBLE
+                startReveal(mBinding.btnSync) {}
+                mBinding.frameAnimation.visibility = View.GONE
+            }
             mAdapter.submitList(it)
         })
     }
 
     private fun initToolbarButtons() {
 
-        ivNavigate.setOnClickListener {
+        mBinding.ivNavigate.setOnClickListener {
             if (!mDrawer.isDrawerOpen) {
                 mDrawer.openDrawer()
             }
             //viewModel.updateUserProfile()
         }
 
-        ivSearch.setOnClickListener {
+        mBinding.ivSearch.setOnClickListener {
             isSearchShown = true
-            frame_toolbar_buttons.visibility = View.INVISIBLE
-            frame_search.visibility = View.VISIBLE
+            mBinding.frameToolbarButtons.visibility = View.INVISIBLE
+            mBinding.frameSearch.visibility = View.VISIBLE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                startReveal(frame_search) {
-                    if (etSearch.requestFocus())
-                        showSoftKeyboard(etSearch)
+                startReveal(mBinding.frameSearch) {
+                    if (mBinding.etSearch.requestFocus())
+                        showSoftKeyboard(mBinding.etSearch)
                 }
             } else {
-                if (etSearch.requestFocus())
-                    showSoftKeyboard(etSearch)
+                if (mBinding.etSearch.requestFocus())
+                    showSoftKeyboard(mBinding.etSearch)
             }
         }
 
-        ivClose.setOnClickListener {  //TODO closeReveal kar nemikonad??
+        mBinding.ivClose.setOnClickListener {  //TODO closeReveal kar nemikonad??
             viewModel.filterList(null)
             closeSearchBar()
         }
 
 
-        etSearch.addTextChangedListener(object : OptimizedSearchTextWatcher() {
+        mBinding.etSearch.addTextChangedListener(object : OptimizedSearchTextWatcher() {
             override fun itsSearchTime(s: Editable) {
                 if (s.length > 2) {
                     viewModel.filterList(s.toString().clearString())
@@ -369,15 +393,15 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
     private fun closeSearchBar() {
         isSearchShown = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            closeReveal(frame_search) {
-                frame_search.visibility = View.INVISIBLE
+            closeReveal(mBinding.frameSearch) {
+                mBinding.frameSearch.visibility = View.INVISIBLE
             }
         } else {
-            frame_search.visibility = View.INVISIBLE
+            mBinding.frameSearch.visibility = View.INVISIBLE
         }
-        frame_toolbar_buttons.visibility = View.VISIBLE
+        mBinding.frameToolbarButtons.visibility = View.VISIBLE
         hideSoftKeyboard()
-        etSearch.text.clear()
+        mBinding.etSearch.text.clear()
     }
 
 
@@ -403,7 +427,8 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
         ivProfile = headerResult.view.findViewById(R.id.main_activity_profile_image)
         drawerProfile.setOnClickListener {
-            toast("not yet implemented")
+            toast(getString(R.string.msg_not_impl))
+            closeDrawer()
         }
         tvNameDrawer.text = user.name
         loadProfilePic(ivProfile, user.profilePic)
