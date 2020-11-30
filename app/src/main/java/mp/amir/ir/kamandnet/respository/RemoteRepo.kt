@@ -6,12 +6,15 @@ import kotlinx.coroutines.Dispatchers.Main
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.api.Entity
 import mp.amir.ir.kamandnet.models.api.LoginRequest
+import mp.amir.ir.kamandnet.models.enums.InstructionState
+import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.utils.fakeInstructions
 import mp.amir.ir.kamandnet.utils.fakeInstructions2
 import mp.amir.ir.kamandnet.utils.general.RunOnceLiveData
 import mp.amir.ir.kamandnet.utils.general.launchApi
+import mp.amir.ir.kamandnet.utils.general.now
 import mp.amir.ir.kamandnet.utils.makeInstruction
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -133,12 +136,16 @@ object RemoteRepo {
     fun checkUpdates() = apiReq(ApiService.client::checkUpdates)
 
     fun submitInstruction(
-        requestId: Int,
-        description: String,
-        tagCode: String?,
-        date: String,
-        images: List<File>
+        instruction: Instruction,
     ): RunOnceLiveData<Entity<Any>?> {
+        val flow = instruction.submitFlowModel!!
+        val requestId = instruction.id
+        val description = flow.description!!
+        val tagCode = flow.scannedTagCode
+        val date = flow.doneDate ?: now().toString() //TODO  age tagCode nadasht che tarikhi bokhore???
+        val images = flow.images
+        //
+
         val idPart = requestId.toString().toRequestBody("text/plane".toMediaTypeOrNull())
         val descPart = description.toRequestBody("text/plane".toMediaTypeOrNull())
         val tagPart = tagCode?.toRequestBody("text/plane".toMediaTypeOrNull())
@@ -165,6 +172,17 @@ object RemoteRepo {
                         datePart,
                         imagesPart
                     )
+
+                    if (response.isSuccessful) {
+                        if (response.body()?.isSucceed == true) {
+                            InstructionsRepo.update(
+                                instruction.copy(
+                                    sendingState = SendingState.Sent,
+                                    _requestStateId = InstructionState.Done.id
+                                )
+                            )
+                        }
+                    }
                     withContext(Main) {
                         value = response.body()
                     }

@@ -24,25 +24,34 @@ class MainActivityViewModel : ViewModel() {
 
 
     private val submitFlowEvent = MutableLiveData<Instruction>()
-    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) { _instruction ->
-        val flow = _instruction.submitFlowModel!!
-        RemoteRepo.submitInstruction(
-            _instruction.id,
-            flow.description!!,
-            flow.scannedTagCode,
-            flow.doneDate ?: now().toString(), //TODO  age tagCode nadasht che tarikhi bokhore???
-            flow.images
-        ).map { response ->
-            InstructionsRepo.update(_instruction.apply { //todo behtare in Repo.UPDATE ro be repo level bord va yek suspend fun nevesht vasash ke ye coroutine dg ijad nashe
-                if (response?.isSucceed == true) {
-                    _instruction.sendingState = SendingState.Sent
-                } else {
-                    _instruction.sendingState = SendingState.Ready
-                }
-            })
-            response
-        }
+    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) {
+        RemoteRepo.submitInstruction(it)
     }
+
+    private val filterKey = MutableLiveData<String>()
+    private val getInstructionsFromServerEvent = MutableLiveData<Unit>()
+
+    val getInstructionsFromServerResponse =
+        Transformations.switchMap(getInstructionsFromServerEvent) {
+            RemoteRepo.getInstructions()
+        }
+
+    val instructions =
+        Transformations.switchMap(DoubleTrigger(filterKey, InstructionsRepo.allInstructions)) {
+            val keyword = it.first
+            if (keyword.isNullOrBlank()) {
+                InstructionsRepo.search(keyword = "%")
+            } else {
+                InstructionsRepo.search(keyword = keyword)
+            }.map { _instructions ->
+                _instructions.filter { _instr ->
+                    //_instr.sendingState != SendingState.Sent
+                     _instr.state == InstructionState.Started
+                }.sortedWith(compareByDescending { item ->
+                    item.repairType == RepairType.EM
+                })
+            }
+        }
 
 
     private var isCheckedForUpdatesRequestActive = false
@@ -66,31 +75,6 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-
-    private val filterKey = MutableLiveData<String>()
-    private val getInstructionsFromServerEvent = MutableLiveData<Unit>()
-
-    val getInstructionsFromServerResponse =
-        Transformations.switchMap(getInstructionsFromServerEvent) {
-            RemoteRepo.getInstructions()
-        }
-
-    val instructions =
-        Transformations.switchMap(DoubleTrigger(filterKey, InstructionsRepo.allInstructions)) {
-            val keyword = it.first
-            if (keyword.isNullOrBlank()) {
-                InstructionsRepo.search(keyword = "%")
-            } else {
-                InstructionsRepo.search(keyword = keyword)
-            }.map { _instructions ->
-                _instructions.filter { _instr ->
-                    _instr.sendingState != SendingState.Sent
-                            || _instr.state == InstructionState.Started //TODO che state haee ro neshun bedam?
-                }.sortedWith(compareByDescending { item ->
-                    item.repairType == RepairType.EM
-                })
-            }
-        }
 
     fun filterList(filterKey: String?) {
         if (this.filterKey.value != filterKey)

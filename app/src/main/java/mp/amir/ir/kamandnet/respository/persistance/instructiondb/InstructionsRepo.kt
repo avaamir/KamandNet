@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
 import mp.amir.ir.kamandnet.models.enums.InstructionState
+import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.utils.general.EqualityCallback
 import mp.amir.ir.kamandnet.utils.general.OnSourceListChange
 import mp.amir.ir.kamandnet.utils.general.diffSourceFromNewValues
@@ -117,6 +118,12 @@ object InstructionsRepo {
                         oldItem: Instruction,
                         newItem: Instruction
                     ): Boolean {
+                        /*//age ghablan sent shode dg nabayad miumade vali umade, pas dobare bayad bere to vaziyat NotReady
+                        //chun alan filter ruye instruction.state hast dg niazi be in shart nist, be mahz submit shodan ins.state update mishe va age inja biad yaani started bude va automatic update mishe
+                        if (oldItem.sendingState == SendingState.Sent) {
+                            return true
+                        }*/
+
                         return oldItem.repairGroupTitle == newItem.repairGroupTitle &&
                                 oldItem._repairTypeId == newItem._repairTypeId &&
                                 oldItem._tagTypeId == newItem._tagTypeId &&
@@ -126,8 +133,8 @@ object InstructionsRepo {
                                 oldItem.date == newItem.date &&
                                 oldItem.nodeInstance == newItem.nodeInstance &&
                                 oldItem.nodeType == newItem.nodeType &&
-                                //TODO not tested
                                 oldItem.description == newItem.description &&
+                                //age logDescription dashtim bayad save beshe dar submitFlowResult.description
                                 (newItem.description.isNullOrBlank() || newItem.description == oldItem.submitFlowModel?.description)
                     }
 
@@ -150,12 +157,20 @@ object InstructionsRepo {
                             nodeInstance = newItem.nodeInstance,
                             nodeType = newItem.nodeType
                         )
-                        //TODO not tested
+                        //age logDescription dashtim bayad save beshe dar submitFlowResult.description //conflict join beshe baham
                         if (!newItem.description.isNullOrBlank() && newItem.description != oldItem.submitFlowModel?.description) {
                             (itemToSave.submitFlowModel ?: SubmitFlowModel().also {
                                 itemToSave.submitFlowModel = it
-                            }).description = newItem.description
+                            }).apply {
+                                description = if (description.isNullOrBlank())
+                                    newItem.description
+                                else
+                                    "$description - ${newItem.description}"
+                            }
                         }
+                        //age ghablan sent shode dg nabayad miumade vali umade, pas dobare bayad bere to vaziyat NotReady
+                        if (itemToSave.sendingState == SendingState.Sent)
+                            itemToSave.sendingState = SendingState.NotReady
                         updateList.add(itemToSave)
                     }
 
@@ -173,9 +188,7 @@ object InstructionsRepo {
                             dao.updateNonSuspend(updateList)
                         }
                     }
-                }).also {
-                    println("Debux:result: $it")
-                }
+                })
         }.run()
     }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
+import mp.amir.ir.kamandnet.models.enums.InstructionState
 import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.models.enums.TagType
 import mp.amir.ir.kamandnet.respository.RemoteRepo
@@ -29,24 +30,8 @@ class InstructionActivityViewModel : ViewModel() {
     private lateinit var instructionToSave: Instruction
 
     private val submitFlowEvent = MutableLiveData<Instruction>()
-    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) { _instruction ->
-        val flow = _instruction.submitFlowModel!!
-        RemoteRepo.submitInstruction(
-            _instruction.id,
-            flow.description!!,
-            flow.scannedTagCode,
-            flow.doneDate ?: now().toString(), //TODO  age tagCode nadasht che tarikhi bokhore???
-            flow.images
-        ).map { response ->
-            InstructionsRepo.update(_instruction.apply { //todo behtare in Repo.UPDATE ro be repo level bord va yek suspend fun nevesht vasash ke ye coroutine dg ijad nashe
-                if (response?.isSucceed == true) {
-                    _instruction.sendingState = SendingState.Sent
-                } else {
-                    _instruction.sendingState = SendingState.Ready
-                }
-            })
-            response
-        }
+    val submitInstructionResponse = Transformations.switchMap(submitFlowEvent) {
+        RemoteRepo.submitInstruction(it)
     }
 
 
