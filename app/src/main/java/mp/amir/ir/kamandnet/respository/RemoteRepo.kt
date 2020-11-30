@@ -10,19 +10,16 @@ import mp.amir.ir.kamandnet.models.enums.InstructionState
 import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
-import mp.amir.ir.kamandnet.utils.fakeInstructions
-import mp.amir.ir.kamandnet.utils.fakeInstructions2
+import mp.amir.ir.kamandnet.utils.kamand.fakeInstructions
 import mp.amir.ir.kamandnet.utils.general.RunOnceLiveData
 import mp.amir.ir.kamandnet.utils.general.launchApi
 import mp.amir.ir.kamandnet.utils.general.now
-import mp.amir.ir.kamandnet.utils.makeInstruction
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
-import java.io.File
 import kotlin.reflect.KSuspendFunction0
 import kotlin.reflect.KSuspendFunction1
 

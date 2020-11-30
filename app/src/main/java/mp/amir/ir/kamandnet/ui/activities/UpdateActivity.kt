@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_update.*
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.models.UpdateResponse
-import mp.amir.ir.kamandnet.ui.customs.dialogs.MyProgressDialog
+import mp.amir.ir.kamandnet.ui.dialogs.MyProgressDialog
 import mp.amir.ir.kamandnet.utils.general.AppUpdater
 import mp.amir.ir.kamandnet.utils.general.alert
 import mp.amir.ir.kamandnet.utils.general.toast

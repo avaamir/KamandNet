@@ -40,8 +40,8 @@ import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 import mp.amir.ir.kamandnet.ui.adapter.InstructionsAdapter
 import mp.amir.ir.kamandnet.ui.customs.animations.closeReveal
 import mp.amir.ir.kamandnet.ui.customs.animations.startReveal
-import mp.amir.ir.kamandnet.ui.customs.dialogs.PermissionDialog
 import mp.amir.ir.kamandnet.ui.dialogs.NoNetworkDialog
+import mp.amir.ir.kamandnet.ui.dialogs.PermissionDialog
 import mp.amir.ir.kamandnet.utils.general.*
 import mp.amir.ir.kamandnet.utils.kamand.Constants
 import mp.amir.ir.kamandnet.viewmodels.MainActivityViewModel
@@ -371,7 +371,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
             }
         }
 
-        mBinding.ivClose.setOnClickListener {  //TODO closeReveal kar nemikonad??
+        mBinding.ivClose.setOnClickListener {
             viewModel.filterList(null)
             closeSearchBar()
         }
@@ -436,7 +436,8 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
             closeDrawer()
         }
         tvNameDrawer.text = user.name
-        loadProfilePic(ivProfile, user.profilePic)
+
+        ivProfile.setImageResource(R.drawable.ic_profile_placeholder2) //TODO get from server
 
         val headerAppName = headerResult.view.findViewById<TextView>(R.id.header_app_name)
         headerAppName.typeface = belham
@@ -548,7 +549,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
 
     override fun onUnauthorizedAction(event: Event<Unit>) {
         event.getEventIfNotHandled()?.let {
-            toast("فرد دیگری با حساب کاربری شما وارد شده است. باید دوباره وارد شوید")
+            toast(Constants.UNAUTHORIZED_MSG)
             finish()
         }
     }

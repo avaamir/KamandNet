@@ -27,22 +27,5 @@ fun Activity.toast(text: String, isLongLength: Boolean = true) {
 
 
 fun Fragment.toast(text: String, isLongLength: Boolean = false) {
-
     activity?.toast(text, isLongLength)
-
-
-    //todo test above code if working delete below code
-    //TOAST
-    /*val layout = layoutInflater
-        .inflate(
-            R.layout.view_my_toast_layout,
-            activity?.findViewById(R.id.custom_toast_container)
-        )
-    val textView = layout.findViewById<TextView>(R.id.text_in_my_toast)
-    textView.text = text
-    val toast = Toast.makeText(context, "", Toast.LENGTH_SHORT)
-    toast.setGravity(toast.gravity, toast.xOffset, toast.yOffset + 50)
-    toast.duration = Toast.LENGTH_SHORT
-    toast.view = layout
-    toast.show()*/
 }

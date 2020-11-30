@@ -38,7 +38,6 @@ object ApiService {
 
     private fun makeRetrofit(baseURL: String): Retrofit {
         val client: OkHttpClient = OkHttpClient.Builder()
-            //UnsafeOkHttpClient.getUnsafeOkHttpClientBuilder()
             .apply {
                 addInterceptor { chain ->
                     val builder = chain.request().newBuilder()

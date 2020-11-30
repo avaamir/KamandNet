@@ -1,4 +1,4 @@
-package mp.amir.ir.kamandnet.ui.customs.dialogs
+package mp.amir.ir.kamandnet.ui.dialogs
 
 import android.annotation.SuppressLint
 import android.content.Context
