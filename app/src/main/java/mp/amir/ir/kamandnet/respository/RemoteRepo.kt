@@ -84,23 +84,6 @@ object RemoteRepo {
             }
         }
 
-    /*fun login(username: String, password: String, onResponse: (Entity<User>?) -> Unit) {
-        if (!RemoteRepo::serverJobs.isInitialized || !serverJobs.isActive) serverJobs = Job()
-        CoroutineScope(IO + serverJobs).launchApi({
-            val response = ApiService.client.login(LoginRequest(username, password))
-            val userEntity = response.body()
-            if (userEntity?.isSucceed == true) {
-                val user = userEntity.entity!!
-                UserConfigs.loginUser(user)
-            }
-            withContext(Main) {
-                onResponse(userEntity)
-            }
-        }, {
-            onResponse(null)
-        })
-    }*/
-
     fun logout(onResponse: (String?) -> Unit) {
         //todo if succeed
         UserConfigs.logout()

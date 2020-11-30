@@ -14,6 +14,8 @@ class QRScannerActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner
     private lateinit var instruction: Instruction
 
+    private var lastScannedCode: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_q_r_scanner)
@@ -56,7 +58,10 @@ class QRScannerActivity : AppCompatActivity() {
                         )
                         finish()
                     } else {
-                        toast("این تگ مربوطه به این دستور کار نمیباشد")
+                        if(lastScannedCode != result.text) {
+                            lastScannedCode = result.text
+                            toast("این تگ مربوطه به این دستور کار نمیباشد")
+                        }
                     }
                 }
             }
