@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import mp.amir.ir.kamandnet.models.Instruction
+import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
 import mp.amir.ir.kamandnet.models.enums.InstructionState
 import mp.amir.ir.kamandnet.utils.general.EqualityCallback
 import mp.amir.ir.kamandnet.utils.general.OnSourceListChange
@@ -124,7 +125,10 @@ object InstructionsRepo {
                                 oldItem.jobType == newItem.jobType &&
                                 oldItem.date == newItem.date &&
                                 oldItem.nodeInstance == newItem.nodeInstance &&
-                                oldItem.nodeType == newItem.nodeType
+                                oldItem.nodeType == newItem.nodeType &&
+                                //TODO not tested
+                                oldItem.description == newItem.description &&
+                                (newItem.description.isNullOrBlank() || newItem.description == oldItem.submitFlowModel?.description)
                     }
 
                 }, object : OnSourceListChange<Instruction> {
@@ -146,6 +150,12 @@ object InstructionsRepo {
                             nodeInstance = newItem.nodeInstance,
                             nodeType = newItem.nodeType
                         )
+                        //TODO not tested
+                        if (!newItem.description.isNullOrBlank() && newItem.description != oldItem.submitFlowModel?.description) {
+                            (itemToSave.submitFlowModel ?: SubmitFlowModel().also {
+                                itemToSave.submitFlowModel = it
+                            }).description = newItem.description
+                        }
                         updateList.add(itemToSave)
                     }
 

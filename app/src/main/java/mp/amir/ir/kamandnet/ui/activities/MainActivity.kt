@@ -1,6 +1,7 @@
 package mp.amir.ir.kamandnet.ui.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -405,6 +406,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun initDrawer(user: User) {
         val headerResult: AccountHeader =
             AccountHeaderBuilder()
@@ -416,6 +418,9 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
                 .withTextColor(ContextCompat.getColor(this, R.color.white))
                 .build()
 
+
+        val tvVersion = headerResult.view.findViewById<TextView>(R.id.tvVersion)
+        tvVersion.text = "v${BuildConfig.VERSION_NAME}"
 
         val drawerProfile = headerResult.view.findViewById<RelativeLayout>(R.id.text_layout)
         tvNameDrawer = headerResult.view.findViewById(R.id.user_fullName_text)
