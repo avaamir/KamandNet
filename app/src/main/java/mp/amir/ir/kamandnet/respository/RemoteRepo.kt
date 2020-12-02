@@ -24,6 +24,14 @@ import kotlin.reflect.KSuspendFunction0
 import kotlin.reflect.KSuspendFunction1
 
 
+/**
+* tamami api ha az tarigh in kelass call mishavad
+ * amaliyat haee ke dar laye haye repo mesl zakhire dar local va .. anjam shavad va amade sazi response barye
+ * enteghal az thread IO be UI dar in file anjam shode ast
+ *
+ * deghat shavad endpoint ha dar kelass KamandClient.kt hast
+* */
+
 object RemoteRepo {
     private lateinit var serverJobs: CompletableJob
 

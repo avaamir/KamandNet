@@ -15,6 +15,7 @@ import retrofit2.Response
 import retrofit2.http.*
 import java.io.File
 
+/** tamami api ha(masir , method, requestBody, ResponseBody) dar in ja moshakhas mishavad*/
 
 interface KamandClient {
     @POST("User/login")

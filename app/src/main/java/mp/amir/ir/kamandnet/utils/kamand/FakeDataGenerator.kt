@@ -7,6 +7,13 @@ import mp.amir.ir.kamandnet.models.enums.RepairType
 import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.models.enums.TagType
 
+
+/**
+ * barye test ui az in file estefade mishavad va dar laye RemoteRepo be jaye call kardan api
+ * mitavan az in method ha estefade kard ta UI test shavad
+ *
+ * */
+
 /*fun fakeInstructions() = listOf(
     Instruction(1,  "برق","سرویس","12:20 99/08/03","شروع شده","نوار نقاله", "نوار نقاله یک"),
     Instruction(2,  "برق","سرویس","12:20 99/08/03","شروع شده","نوار نقاله", "نوار نقاله یک"),

@@ -6,6 +6,10 @@ import mp.amir.ir.kamandnet.models.User
 import mp.amir.ir.kamandnet.respository.apiservice.ApiService
 import mp.amir.ir.kamandnet.respository.sharepref.PrefManager
 
+/**
+* etelat marbut be session user faal dar app
+ * tamami ertebat haee ke ba User bayad anjam shavad mesl login , logout, zakhire token va .. az tarigh in kelass anjam mishavad
+* */
 object UserConfigs {
     private val userLive = MutableLiveData<User?>(null)
     val user: LiveData<User?> get() = userLive

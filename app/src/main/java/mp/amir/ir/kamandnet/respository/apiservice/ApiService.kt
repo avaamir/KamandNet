@@ -16,7 +16,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
+/**
+* file config etesalat api va url nahee va sakht kamandClient
+* */
 object ApiService {
     lateinit var domain: String
         private set

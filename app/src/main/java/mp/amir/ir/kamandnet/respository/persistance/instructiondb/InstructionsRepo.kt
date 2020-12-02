@@ -100,6 +100,22 @@ object InstructionsRepo {
     }
 
 
+    /**
+     * amaliyat sync kardan server va local ba in method etefagh mioftad
+     * dar in method list daryaft shode az server be onvan vorudi tabe
+     * gerefte mishavad va list ghadimi niz az localDb gerefte mishavad
+     * ba moghayese 2 list az tarigh method  'diffSourceFromNewValues' ke dar
+     * 2 list moghayese mishavand va 3 halat update, delete va insert pish miayad
+     * va bar asas an localDB ra ba server sync mikonim
+     *
+     * code ha be soorat modular hast va az tabe 'diffSourceFromNewValues' mitavan baraye moghayese har
+     * 2 listi estefade kard va 2 vorudi be soorat interface migirad ke kar ba an serahatan moshakhas ast
+     *
+     * dar file MyListDiffUtil.kt method tarif shode ast va mitavanid an ra barrasi konid, say shode ast ke
+     * az nazar performance khoob amal konad dar soorati ke algorithem behtari barye moghayese 2 list darid
+     * mitavinid 'MyListDiffUtil.kt' ra taghir dahid va chun code ha modular neveshte shode ast nizi be hich taghiri
+     * dar in file nist
+     * */
     fun insertOrUpdate(items: List<Instruction>) {
         if (!::job.isInitialized || !job.isActive)
             job = Job()

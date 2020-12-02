@@ -89,6 +89,6 @@ interface OnSourceListChange<T> {
 }
 
 interface EqualityCallback<T> {
-    fun areItemsSame(oldItem: T, newItem: T): Boolean
-    fun areContentsSame(oldItem: T, newItem: T): Boolean
+    fun areItemsSame(oldItem: T, newItem: T): Boolean /** item ghabli ba jadid yeki hastand ya na? mamulan az tarigh id item moshakhas mishavad */
+    fun areContentsSame(oldItem: T, newItem: T): Boolean /** 2 itemi ke ba ham yeksan budand aya mohtavaye yeksani ham darand ya na? agar nadarand pas niaz be update oldItem hast*/
 }
