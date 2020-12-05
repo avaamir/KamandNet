@@ -228,7 +228,9 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
                 closeSearchBar()
             }
             else -> {
-                super.onBackPressed()
+                alert("توجه", "آیا خارج میشوید؟", "بله", "خیر") {
+                    super.onBackPressed()
+                }
             }
         }
     }
