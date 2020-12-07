@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         app:cardCornerRadius="5dp"
         app:cardElevation="0dp"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/ivPic"
@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            tools:src="@drawable/sample_bill_gates"
+            tools:src="@drawable/ic_message"
             />
 
     </androidx.cardview.widget.CardView>

@@ -53,8 +53,10 @@ fun Activity.dispatchTakePictureIntent(captureImageReqId: Int): File? {
 
 fun setImageViewFromFile(path: String, imageView: ImageView) {
     // Get the dimensions of the View
-    val targetW: Int = imageView.width
-    val targetH: Int = imageView.height
+    val targetW: Int = //if (imageView.width == 0) 200 else
+        imageView.width
+    val targetH: Int = //if(imageView.height == 0) 200 else
+        imageView.height
 
     val bmOptions = BitmapFactory.Options().apply {
         // Get the dimensions of the bitmap

@@ -66,6 +66,7 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             }.exhaustiveAsExpression()
         )
 
+
         instruction.submitFlowModel?.let {
             val deletedFileList = arrayListOf<File>()
             it.images.forEach { file ->
@@ -74,7 +75,7 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
                 } else {
                     if (turn > 5)
                         throw Exception("turn is more than 5")
-                    onChoseImage(file, shouldSave = false)
+                    onChoseImage(file)
                 }
             }
             if (deletedFileList.isNotEmpty()) {
@@ -93,7 +94,9 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
                 toast("تنها میتوانید 5 عکس بارگذاری کنید", false)
                 return@setOnClickListener
             }
-            dispatchTakePictureIntent(CAPTURE_IMAGE_REQ)
+            dispatchTakePictureIntent(CAPTURE_IMAGE_REQ)?.let {
+                viewModel.lastCapturedImage = it
+            }
             /*old code: startActivityForResult(
                 Intent(MediaStore.ACTION_IMAGE_CAPTURE),
                 CAPTURE_IMAGE_REQ
@@ -162,21 +165,6 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
     }
 
     override fun onBackPressed() {
-        //TODO if has change show dialog
-        /* alert(
-             "توجه",
-             "تغییرات ذخیره شود؟",
-             "بله",
-             "خیر",
-             true,
-             {
-                 super.onBackPressed()
-             },
-             {
-                 //TODO save pics to memory and has address in db
-                 //TODO save to DB
-                 super.onBackPressed()
-             })*/
         val description = mBinding.etDesc.text.toString().trim()
         if (description.isNotEmpty())
             viewModel.submitResult(description = description)
@@ -189,7 +177,7 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             CAPTURE_IMAGE_REQ -> {
                 if (resultCode == RESULT_OK) {
                     viewModel.saveImage(viewModel.lastCapturedImage, turn)
-                    onChoseImage(viewModel.lastCapturedImage, shouldSave = true)
+                    onChoseImage(viewModel.lastCapturedImage)
                     /*Old Code:*/
                     /*val bitmap = data?.extras?.get("data") as Bitmap?
                     if (bitmap != null) {
@@ -216,7 +204,7 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
     }
 
 
-    private fun onChoseImage(imageFile: File, shouldSave: Boolean) {
+    private fun onChoseImage(imageFile: File) {
         println("debug: $turn")
         val chosenFrame = when (turn) {
             1 -> mBinding.framePic1
@@ -231,11 +219,10 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             return
         }
         turn++
-        chosenFrame.framePlaceHolder.visibility = View.GONE
-        chosenFrame.framePic.visibility = View.VISIBLE
-        //oldCode:chosenFrame.framePic.ivPic.setImageBitmap(bitmap)
-        if(shouldSave) {
+        chosenFrame.post {
             setImageViewFromFile(imageFile.absolutePath, chosenFrame.framePic.ivPic)
+            chosenFrame.framePlaceHolder.visibility = View.GONE
+            chosenFrame.framePic.visibility = View.VISIBLE
         }
     }
 

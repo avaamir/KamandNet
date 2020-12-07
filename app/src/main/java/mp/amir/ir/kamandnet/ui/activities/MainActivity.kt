@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity(), InstructionsAdapter.Interaction,
         super.onCreate(savedInstanceState)
 
 
-        if (true) {
+        if (false) {
             startActivity(Intent(this, TestActivity::class.java))
             finish()
             return
