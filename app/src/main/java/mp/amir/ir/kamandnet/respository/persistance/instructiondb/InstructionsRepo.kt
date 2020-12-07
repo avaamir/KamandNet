@@ -195,6 +195,8 @@ object InstructionsRepo {
                         val nonDoneItems = items.filter {
                             it.state != InstructionState.Done
                         }
+                        /**pak kardan ax haye marbut be instruction haee ke bayad delete shavand*/
+                        deleteRelatedImageFiles(nonDoneItems) //TODO not tested
                         dao.deleteNonSuspend(nonDoneItems) //unaee ke done shodan ro vase history taraf mikham, age done shode bud pakesh nemekinma az repo
                     }
 
@@ -206,5 +208,15 @@ object InstructionsRepo {
                     }
                 })
         }.run()
+    }
+
+    private fun deleteRelatedImageFiles(deletingInstructions: List<Instruction>) {
+        CoroutineScope(IO).launch {
+            deletingInstructions.forEach {
+                it.submitFlowModel!!.images.forEach { image ->
+                    image.delete()
+                }
+            }
+        }
     }
 }

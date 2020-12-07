@@ -97,7 +97,7 @@ object RemoteRepo {
         UserConfigs.logout()
     }
 
-    fun getInstructions2() = apiReq(ApiService.client::getInstructions) {
+    fun getInstructions() = apiReq(ApiService.client::getInstructions) {
         val response = it.body()
         if (response?.isSucceed == true) {
             InstructionsRepo.insertOrUpdate(response.entity!!)
@@ -105,7 +105,7 @@ object RemoteRepo {
     }
 
     //Fake for test purpose
-    fun getInstructions() : RunOnceLiveData<Entity<List<Instruction>>?> {
+    fun getInstructions2() : RunOnceLiveData<Entity<List<Instruction>>?> {
         return object : RunOnceLiveData<Entity<List<Instruction>>?>() {
             override fun onActiveRunOnce() {
                 CoroutineScope(IO).launch {

@@ -205,7 +205,6 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             }
         }
 
-
     }
 
     private fun onImageFileReady() {
