@@ -236,12 +236,28 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             toast("تنها میتوانید 5 عکس بارگذاری کنید", false)
             return
         }
-        turn++
+        val mTurn = turn
         chosenFrame.post {
             setImageViewFromFile(imageFile.absolutePath, chosenFrame.framePic.ivPic)
             chosenFrame.framePlaceHolder.visibility = View.GONE
             chosenFrame.framePic.visibility = View.VISIBLE
+            chosenFrame.framePic.ivPic.setOnClickListener {
+                alert(
+                    "پاک کردن",
+                    "آیا میخواهید عکس را پاک کنید؟",
+                    "",
+                    "",
+                    true
+                ) {
+                    toast(getString(R.string.msg_not_impl))
+                    /*viewModel.deleteImage(mTurn)
+                    if (turn > mTurn + 1) { //age bad az in ax ke dare pak mishe ax dg ee bud bayad mohtavaye imageView ha ro shift bedim
+
+                    }*/
+                }
+            }
         }
+        turn++
     }
 
 
