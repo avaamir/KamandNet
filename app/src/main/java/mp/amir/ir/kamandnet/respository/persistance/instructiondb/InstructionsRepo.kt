@@ -213,7 +213,7 @@ object InstructionsRepo {
     private fun deleteRelatedImageFiles(deletingInstructions: List<Instruction>) {
         CoroutineScope(IO).launch {
             deletingInstructions.forEach {
-                it.submitFlowModel!!.images.forEach { image ->
+                it.submitFlowModel?.images?.forEach { image ->
                     image.delete()
                 }
             }
