@@ -6,7 +6,13 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.item_pic_placeholder.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mp.amir.ir.kamandnet.R
 import mp.amir.ir.kamandnet.databinding.ActivityInstructionBinding
 import mp.amir.ir.kamandnet.models.enums.RepairType
@@ -176,8 +182,7 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
         when (requestCode) {
             CAPTURE_IMAGE_REQ -> {
                 if (resultCode == RESULT_OK) {
-                    viewModel.saveImage(viewModel.lastCapturedImage, turn)
-                    onChoseImage(viewModel.lastCapturedImage)
+                    onImageFileReady()
                     /*Old Code:*/
                     /*val bitmap = data?.extras?.get("data") as Bitmap?
                     if (bitmap != null) {
@@ -201,6 +206,20 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
         }
 
 
+    }
+
+    private fun onImageFileReady() {
+        /** Compressing and saving image path, Deleting original high quality picture,
+         *  setting picture to imageView
+         *  */
+        CoroutineScope(IO).launch {
+            val compressedFile = Compressor.compress(baseContext, viewModel.lastCapturedImage)
+            viewModel.saveImage(compressedFile, turn)
+            withContext(Main) {
+                onChoseImage(compressedFile)
+            }
+            viewModel.lastCapturedImage.delete()
+        }
     }
 
 

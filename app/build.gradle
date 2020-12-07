@@ -90,4 +90,5 @@ dependencies {
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
+    implementation 'id.zelory:compressor:3.0.0'
 }
