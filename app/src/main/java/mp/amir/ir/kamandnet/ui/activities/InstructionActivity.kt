@@ -73,22 +73,8 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
         )
 
 
-        instruction.submitFlowModel?.let {
-            val deletedFileList = arrayListOf<File>()
-            it.images.forEach { file ->
-                if (!file.exists()) {
-                    deletedFileList.add(file)
-                } else {
-                    if (turn > 5)
-                        throw Exception("turn is more than 5")
-                    onChoseImage(file)
-                }
-            }
-            if (deletedFileList.isNotEmpty()) {
-                toast("بعضی از عکس ها پاک شده است")
-                it.images.removeAll(deletedFileList)
-                viewModel.submitImages(it.images)
-            }
+        instruction.submitFlowModel?.images?.also {
+            resetAndInitialImages(it)
         }
 
         mBinding.ivBack.setOnClickListener {
@@ -249,9 +235,10 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
                     "خیر",
                     true
                 ) {
-                    toast(getString(R.string.msg_not_impl))
-                    /*viewModel.deleteImage(mTurn)
-                    if (turn > mTurn + 1) { //age bad az in ax ke dare pak mishe ax dg ee bud bayad mohtavaye imageView ha ro shift bedim
+                    viewModel.deleteImage(mTurn) { newImages ->
+                        resetAndInitialImages(newImages)
+                    }
+                    /*if (turn > mTurn + 1) { //age bad az in ax ke dare pak mishe ax dg ee bud bayad mohtavaye imageView ha ro shift bedim
 
                     }*/
                 }
@@ -260,6 +247,37 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
         turn++
     }
 
+    private fun resetAndInitialImages(mImages: List<File>) {
+        turn = 1
+        mBinding.framePic1.framePlaceHolder.visibility = View.VISIBLE
+        mBinding.framePic1.framePic.visibility = View.INVISIBLE
+        mBinding.framePic2.framePlaceHolder.visibility = View.VISIBLE
+        mBinding.framePic2.framePic.visibility = View.INVISIBLE
+        mBinding.framePic3.framePlaceHolder.visibility = View.VISIBLE
+        mBinding.framePic3.framePic.visibility = View.INVISIBLE
+        mBinding.framePic4.framePlaceHolder.visibility = View.VISIBLE
+        mBinding.framePic4.framePic.visibility = View.INVISIBLE
+        mBinding.framePic5.framePlaceHolder.visibility = View.VISIBLE
+        mBinding.framePic5.framePic.visibility = View.INVISIBLE
+
+
+        val images = ArrayList(mImages)
+        val deletedFileList = arrayListOf<File>()
+        images.forEach { file ->
+            if (!file.exists()) {
+                deletedFileList.add(file)
+            } else {
+                if (turn > 5)
+                    throw Exception("turn is more than 5")
+                onChoseImage(file)
+            }
+        }
+        if (deletedFileList.isNotEmpty()) {
+            toast("بعضی از عکس ها پاک شده است")
+            images.removeAll(deletedFileList)
+            viewModel.submitImages(images)
+        }
+    }
 
     override fun onUnauthorizedAction(event: Event<Unit>) {
         finish()

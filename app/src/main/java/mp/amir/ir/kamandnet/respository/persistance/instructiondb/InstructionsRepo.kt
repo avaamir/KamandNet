@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
 import mp.amir.ir.kamandnet.models.enums.InstructionState
@@ -48,11 +50,14 @@ object InstructionsRepo {
         }
     }
 
-    fun update(item: Instruction) {
+    fun update(item: Instruction, onActionDone: (() -> Unit)? = null) {
         if (!::job.isInitialized || !job.isActive)
             job = Job()
         CoroutineScope(IO + job).launch {
             dao.update(item)
+            withContext(Main) {
+                onActionDone?.invoke()
+            }
         }
     }
 

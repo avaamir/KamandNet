@@ -136,6 +136,14 @@ class InstructionActivityViewModel : ViewModel() {
         InstructionsRepo.update(instructionToSave)
     }
 
+    fun deleteImage(mTurn: Int, onPathDeleted: (List<File>) -> Unit) {
+        val deletedImage = instructionToSave.submitFlowModel!!.images.removeAt(mTurn - 1)
+        deletedImage.delete()
+        InstructionsRepo.update(instructionToSave) {
+            onPathDeleted(instructionToSave.submitFlowModel!!.images)
+        }
+    }
+
 
 }
 
