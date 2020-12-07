@@ -245,8 +245,8 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
                 alert(
                     "پاک کردن",
                     "آیا میخواهید عکس را پاک کنید؟",
-                    "",
-                    "",
+                    "بله، حذف شود",
+                    "خیر",
                     true
                 ) {
                     toast(getString(R.string.msg_not_impl))
