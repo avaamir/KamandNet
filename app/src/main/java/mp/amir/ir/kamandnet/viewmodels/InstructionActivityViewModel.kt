@@ -1,25 +1,22 @@
 package mp.amir.ir.kamandnet.viewmodels
 
-import android.content.Context
-import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import mp.amir.ir.kamandnet.models.Instruction
 import mp.amir.ir.kamandnet.models.api.SubmitFlowModel
-import mp.amir.ir.kamandnet.models.enums.InstructionState
 import mp.amir.ir.kamandnet.models.enums.SendingState
 import mp.amir.ir.kamandnet.models.enums.TagType
 import mp.amir.ir.kamandnet.respository.RemoteRepo
 import mp.amir.ir.kamandnet.respository.persistance.instructiondb.InstructionsRepo
 import mp.amir.ir.kamandnet.utils.general.now
 import java.io.File
-import java.io.FileOutputStream
-import java.util.ArrayList
+import java.util.*
 
 class InstructionActivityViewModel : ViewModel() {
 
+
+    lateinit var lastCapturedImage: File
 
     var instruction: Instruction? = null
         set(value) {
@@ -69,7 +66,29 @@ class InstructionActivityViewModel : ViewModel() {
     }
 
 
-    fun saveImage(context: Context, bitmap: Bitmap, turn: Int) {
+    fun saveImage(file: File, turn: Int): Boolean {
+        if (turn > 5 || turn < 1)
+            throw Exception("framePic$turn does not exist, faghat 5 ta ax mishe upload kard")
+        /*val images = instructionToSave.submitFlowModel?.images
+        if (images != null && images.size >= turn) {
+            val image = images.removeAt(turn - 1)
+            if (image.exists())
+                image.delete()
+        }*/
+
+        return if (file.exists()) {
+            if (instructionToSave.submitFlowModel == null) {
+                instructionToSave.submitFlowModel = SubmitFlowModel()
+            }
+            instructionToSave.submitFlowModel!!.images.add(file)
+            InstructionsRepo.update(instructionToSave)
+            true
+        } else {
+            false
+        }
+    }
+
+    /*fun saveImage(context: Context, bitmap: Bitmap, turn: Int) {
         if (turn > 5 || turn < 1)
             throw Exception("framePic$turn does not exist, faghat 5 ta ax mishe upload kard")
         val images = instructionToSave.submitFlowModel?.images
@@ -99,7 +118,7 @@ class InstructionActivityViewModel : ViewModel() {
             }
         }.run()
 
-    }
+    }*/
 
     fun submitToServer(description: String) {
         if (description.isEmpty()) {

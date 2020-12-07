@@ -1,10 +1,7 @@
 package mp.amir.ir.kamandnet.ui.activities
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -75,10 +72,9 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
                 if (!file.exists()) {
                     deletedFileList.add(file)
                 } else {
-                    val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                     if (turn > 5)
                         throw Exception("turn is more than 5")
-                    onChoseImage(bitmap)
+                    onChoseImage(file, shouldSave = false)
                 }
             }
             if (deletedFileList.isNotEmpty()) {
@@ -97,11 +93,11 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
                 toast("تنها میتوانید 5 عکس بارگذاری کنید", false)
                 return@setOnClickListener
             }
-
-            startActivityForResult(
+            dispatchTakePictureIntent(CAPTURE_IMAGE_REQ)
+            /*old code: startActivityForResult(
                 Intent(MediaStore.ACTION_IMAGE_CAPTURE),
                 CAPTURE_IMAGE_REQ
-            )
+            )*/
         }
 
 
@@ -192,13 +188,16 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
         when (requestCode) {
             CAPTURE_IMAGE_REQ -> {
                 if (resultCode == RESULT_OK) {
-                    val bitmap = data?.extras?.get("data") as Bitmap?
+                    viewModel.saveImage(viewModel.lastCapturedImage, turn)
+                    onChoseImage(viewModel.lastCapturedImage, shouldSave = true)
+                    /*Old Code:*/
+                    /*val bitmap = data?.extras?.get("data") as Bitmap?
                     if (bitmap != null) {
                         viewModel.saveImage(this, bitmap, turn)
                         onChoseImage(bitmap)
                     } else {
                         toast("خطایی به وجود آمد")
-                    }
+                    }*/
                 }
             }
             QR_SCANNER_REQ, NFC_SCANNER_REQ -> {
@@ -217,7 +216,7 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
     }
 
 
-    private fun onChoseImage(bitmap: Bitmap) {
+    private fun onChoseImage(imageFile: File, shouldSave: Boolean) {
         println("debug: $turn")
         val chosenFrame = when (turn) {
             1 -> mBinding.framePic1
@@ -234,7 +233,10 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
         turn++
         chosenFrame.framePlaceHolder.visibility = View.GONE
         chosenFrame.framePic.visibility = View.VISIBLE
-        chosenFrame.framePic.ivPic.setImageBitmap(bitmap)
+        //oldCode:chosenFrame.framePic.ivPic.setImageBitmap(bitmap)
+        if(shouldSave) {
+            setImageViewFromFile(imageFile.absolutePath, chosenFrame.framePic.ivPic)
+        }
     }
 
 
