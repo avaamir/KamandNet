@@ -101,8 +101,8 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             mBinding.btnSave.visibility = View.VISIBLE
         } else when (instruction.tagType) {
             None -> {
-                mBinding.btnSave.visibility = View.VISIBLE
                 mBinding.btnScan.visibility = View.GONE
+                mBinding.btnSave.visibility = View.VISIBLE
             }
             QR -> mBinding.btnScan.setOnClickListener {
                 startActivityForResult(
@@ -206,7 +206,6 @@ class InstructionActivity : AppCompatActivity(), ApiService.InternetConnectionLi
             viewModel.lastCapturedImage.delete()
         }
     }
-
 
     private fun onChoseImage(imageFile: File) {
         println("debug: $turn")
